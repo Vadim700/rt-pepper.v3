@@ -1,7 +1,3 @@
-import React from 'react'
-
 export default function Todos() {
-	return (
-		<main className='grid place-items-center'>Todos</main>
-	)
+  return <main className="grid place-items-center  bg-bg">Todos</main>;
 }
