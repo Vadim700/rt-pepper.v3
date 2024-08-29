@@ -1,0 +1,36 @@
+import { authConfig } from '@/configs/auth';
+import { getServerSession } from 'next-auth';
+import Image from 'next/image';
+import Link from 'next/link';
+
+const Profile = async () => {
+  const session = await getServerSession(authConfig);
+
+  return (
+    <main className="bg-bg flex flex-col justify-center items-center">
+      <h1 className="mb-12 text-3xl">
+        Profile of <span className="text-ginger">{session?.user?.name}</span>
+      </h1>
+      {session?.user?.image && (
+        <Image
+          src={session.user.image}
+          width={150}
+          height={150}
+          alt="Avatar"
+          className="rounded-full mb-4 "
+        />
+      )}
+      {session?.user?.email && (
+        <Link
+          href={`mailto:${session.user.email}`}
+          className="text-lg text-dark-green"
+        >
+          {session.user.email}
+        </Link>
+        
+      )}
+    </main>
+  );
+};
+
+export default Profile;

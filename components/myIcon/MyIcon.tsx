@@ -1,7 +1,9 @@
-import { PhotosIcon } from '@/public/icons/photosIcon';
-import { PostsIcon } from '@/public/icons/postsIcon';
-import { TodosIcon } from '@/public/icons/todos';
+import { PhotosIcon } from '@/ui/icons/PhotosIcon';
+import { PostsIcon } from '@/ui/icons/PostsIcon';
+import { TodosIcon } from '@/ui/icons/Todos';
 import { propIcon } from '@/types';
+import { LogoutIcon } from '@/ui/icons/Logout';
+import { ProfileIcon } from '@/ui/icons/ProfileIcon';
 
 export const MyIcon = ({ name, className, size }: propIcon) => {
   switch (name) {
@@ -13,6 +15,12 @@ export const MyIcon = ({ name, className, size }: propIcon) => {
 
     case 'todos':
       return <TodosIcon name={''} className={''} size={size} />;
+
+    case 'profile':
+      return <ProfileIcon name={''} className={''} size={size} />;
+
+    case 'logout':
+      return <LogoutIcon name={''} className={''} size={size} />;
 
     default:
       return null;

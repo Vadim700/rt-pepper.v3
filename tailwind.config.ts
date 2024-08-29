@@ -15,7 +15,7 @@ const config: Config = {
       },
       colors: {
         'white-green': '#606C38',
-        'dark-green': '#606C38',
+        'dark-green': '#283618',
         'light-yellow': '#FEFAE0',
         brik: '#DDA15E',
         ginger: '#BC6C25',

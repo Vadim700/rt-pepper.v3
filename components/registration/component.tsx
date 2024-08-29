@@ -1,31 +1,34 @@
 'use client';
 import * as React from 'react';
-import ButtonGroup from '@mui/material/ButtonGroup';
-import Button from '@mui/material/Button';
 import Link from 'next/link';
-import { useSession } from 'next-auth/react';
+import { useSession, signOut } from 'next-auth/react';
+import { MyIcon } from '../myIcon/MyIcon';
 
 export default function DisableElevation() {
   const session = useSession();
 
   return (
-    <>
-      {session.data ? (
-        <p>Exit</p>
-      ) : (
-        <ButtonGroup
-          disableElevation
-          variant="contained"
-          aria-label="Disabled button group"
+    <div className="flex flex-col text-lg">
+      {session?.data && (
+        <Link
+          href={'/profile'}
+          className="text-lx mb-6 flex items-center gap-4 pl-2"
         >
-          <Button>
-            <Link href={'/'}>Sign in</Link>
-          </Button>
-          <Button>
-            <Link href={'/'}>Sign up</Link>
-          </Button>
-        </ButtonGroup>
+          <MyIcon name={'profile'} size={40}className=''/> Profile
+        </Link>
       )}
-    </>
+      {session?.data ? (
+        <Link
+          href={'#'}
+          onClick={() => signOut({ callbackUrl: '/' })}
+          className="flex items-center gap-6"
+        >
+          <MyIcon name={'logout'} size={40} />
+          Sign Out
+        </Link>
+      ) : (
+        <Link href={'/api/auth/signin'}>Sign In</Link>
+      )}
+    </div>
   );
 }
