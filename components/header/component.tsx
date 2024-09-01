@@ -7,8 +7,8 @@ import Image from 'next/image';
 
 export default function Header() {
   return (
-    <header className="flex p-8 justify-between items-center">
-      The header
+    <header className="flex p-8 justify-between items-center font-bold text-3xl">
+      Confident Pepper
     </header>
   );
 }

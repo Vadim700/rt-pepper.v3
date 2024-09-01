@@ -27,7 +27,9 @@ export default function DisableElevation() {
           Sign Out
         </Link>
       ) : (
-        <Link href={'/api/auth/signin'}>Sign In</Link>
+          <Link href={'/api/auth/signin'} className='flex items-center gap-6'>
+            <MyIcon name='signIn' size={40}/>
+            Sign In</Link>
       )}
     </div>
   );

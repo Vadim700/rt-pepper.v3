@@ -1,14 +1,19 @@
+import styles from './style.module.scss'
+
 interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   className?: string;
   disabled?: boolean;
 }
 
-export const MyInput: React.FC<InputProps> = ({
+export const Input: React.FC<InputProps> = ({
   className = '',
   disabled = false,
   ...props
 }) => {
-  return <input
-    className={`${className} border border-dark-green size-full rounded-lg h-10 text-xl`}
-    {...props} />;
+  return (
+    <input
+      className={`${styles.input}`}
+      {...props}
+    />
+  );
 };
