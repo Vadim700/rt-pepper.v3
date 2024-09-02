@@ -22,9 +22,18 @@ export default function Navigation({ navLinks }: prop) {
         {navLinks.map((link) => {
           const isActive = pathname === link.href;
           return (
-            <li key={link.label} className={isActive ? `${styles.active} flex items-center gap-4` : `flex items-center gap-4 group`}>
-              <MyIcon name={link.icon} size={30} className="group-hover:text-ginger" />
-              <Link href={link.href}>{link.label}</Link>
+            <li
+              key={link.label}
+              className={
+                isActive
+                  ? `${styles.active} flex items-center gap-4`
+                  : `flex items-center gap-4 ${styles.navItem} `
+              }
+            >
+              <MyIcon name={link.icon} size={30} className="transition-all transition-duration: 150ms" />
+              <Link href={link.href} className="transition-all transition-duration: 150ms">
+                {link.label}
+              </Link>
             </li>
           );
         })}

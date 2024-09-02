@@ -12,14 +12,13 @@ export default function SignInForm() {
     event.preventDefault();
 
     const formData = new FormData(event.currentTarget);
-
     const res = await signIn('credentials', {
       email: formData.get('email'),
       password: formData.get('password'),
       redirect: false,
-    });
+    }); 
 
-    if (res && !res.error) {
+    if (res && res.ok) {
       router.push('/profile');
     } else {
       console.log(res);
@@ -28,8 +27,8 @@ export default function SignInForm() {
 
   return (
     <form onSubmit={handleSubmit} className='flex flex-col gap-4'>
-      <Input placeholder='email' className='min-h-10'/>
-      <Input placeholder='password' type='password'/>
+      <Input placeholder='email' className='min-h-10' type='email' name='email'/>
+      <Input placeholder='password' type='password' name='password'/>
       <Button>Sign In</Button>
     </form>
   );

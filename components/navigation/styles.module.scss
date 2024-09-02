@@ -1,11 +1,9 @@
-.active{
-	color: tomato;
+.active {
+	color: #bc6c25;
 }
 
-// .navItem{
-// 	&:hover{
-// 		svg{
-// 			color: ;
-// 		}
-// 	}
-// }
+.navItem {
+	&:has(a:hover) svg {
+		color: #bc6c25;
+	}
+}
