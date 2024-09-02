@@ -15,7 +15,6 @@ export const authConfig: AuthOptions = {
         password: { label: 'password', type: 'password', required: true },
       },
       async authorize(credentials) {
-        console.log(credentials, '>>> credentials');
         if (!credentials?.email || !credentials?.password) return null;
 
         const currenUser = users.find(
@@ -25,7 +24,6 @@ export const authConfig: AuthOptions = {
 
         if (currenUser && currenUser.password === credentials.password) {
           const { password, ...userWithoutPassword } = currenUser;
-
 
           return userWithoutPassword as User;
         }

@@ -1,10 +1,10 @@
-import { PhotosIcon } from '@/ui/icons/PhotosIcon';
-import { PostsIcon } from '@/ui/icons/PostsIcon';
-import { TodosIcon } from '@/ui/icons/Todos';
+import { PhotosIcon } from '@/components/ui/icons/PhotosIcon';
+import { PostsIcon } from '@/components/ui/icons/PostsIcon';
+import { TodosIcon } from '@/components/ui/icons/Todos';
 import { propIcon } from '@/types';
-import { LogoutIcon } from '@/ui/icons/Logout';
-import { ProfileIcon } from '@/ui/icons/ProfileIcon';
-import { SignInIcon } from '@/ui/icons/SignInIcon';
+import { LogoutIcon } from '@/components/ui/icons/Logout';
+import { ProfileIcon } from '@/components/ui/icons/ProfileIcon';
+import { SignInIcon } from '@/components/ui/icons/SignInIcon';
 
 export const MyIcon = ({ name, className, size }: propIcon) => {
   switch (name) {

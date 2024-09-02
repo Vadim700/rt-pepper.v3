@@ -1,7 +1,7 @@
 'use client';
 
-import Button from '@/ui/Button/Button';
-import { Input } from '@/ui/Input/Input';
+import Button from '@/components/ui/Button/Button';
+import { Input } from '@/components/ui/Input/Input';
 import { signIn } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import type { FormEventHandler } from 'react';

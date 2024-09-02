@@ -1,6 +1,6 @@
 'use client';
 
-import Button from '@/ui/Button/Button';
+import Button from '@/components/ui/Button/Button';
 import { signIn } from 'next-auth/react';
 import { useSearchParams } from 'next/navigation';
 
