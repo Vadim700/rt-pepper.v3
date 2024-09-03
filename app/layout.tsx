@@ -1,8 +1,8 @@
 import type { Metadata } from 'next';
-import './globals.css';
-import Header from '@/components/header/component';
+import '../styles/globals.css';
+import { Header } from '@/components/shared/header/component';
 import { Providers } from '@/components/providers/Providers';
-import Aside from '@/components/aside/component';
+import Aside from '@/components/shared/aside/component';
 
 export const metadata: Metadata = {
   title: 'RT Pepper',

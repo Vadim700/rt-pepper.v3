@@ -4,7 +4,9 @@ import Link from 'next/link';
 import { useSession, signOut } from 'next-auth/react';
 import { MyIcon } from '../myIcon/MyIcon';
 
-export default function DisableElevation() {
+interface Props {}
+
+export const Registration: React.FC<Props> = () => {
   const session = useSession();
 
   return (
@@ -14,7 +16,7 @@ export default function DisableElevation() {
           href={'/profile'}
           className="text-lx mb-6 flex items-center gap-4 pl-2"
         >
-          <MyIcon name={'profile'} size={40}className=''/> Profile
+          <MyIcon name={'profile'} size={40} className="" /> Profile
         </Link>
       )}
       {session?.data ? (
@@ -27,10 +29,11 @@ export default function DisableElevation() {
           Sign Out
         </Link>
       ) : (
-          <Link href={'/signin'} className='flex items-center gap-6'>
-            <MyIcon name='signIn' size={40}/>
-            Sign In</Link>
+        <Link href={'/signin'} className="flex items-center gap-6">
+          <MyIcon name="signIn" size={40} />
+          Sign In
+        </Link>
       )}
     </div>
   );
-}
+};

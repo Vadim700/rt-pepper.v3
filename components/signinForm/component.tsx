@@ -1,10 +1,9 @@
 'use client';
 
-import Button from '@/components/ui/Button/Button';
-import { Input } from '@/components/ui/Input/Input';
 import { signIn } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import type { FormEventHandler } from 'react';
+import { Button, Input } from '../ui';
 
 export default function SignInForm() {
   const router = useRouter();
@@ -16,7 +15,7 @@ export default function SignInForm() {
       email: formData.get('email'),
       password: formData.get('password'),
       redirect: false,
-    }); 
+    });
 
     if (res && res.ok) {
       router.push('/profile');
@@ -26,9 +25,9 @@ export default function SignInForm() {
   };
 
   return (
-    <form onSubmit={handleSubmit} className='flex flex-col gap-4'>
-      <Input placeholder='email' className='min-h-10' type='email' name='email'/>
-      <Input placeholder='password' type='password' name='password'/>
+    <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+      <Input placeholder="email" type="email" name="email" />
+      <Input placeholder="password" type="password" name="password" />
       <Button>Sign In</Button>
     </form>
   );

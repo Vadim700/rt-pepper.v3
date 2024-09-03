@@ -2,7 +2,7 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import styles from './styles.module.scss';
-import { MyIcon } from '../myIcon/MyIcon';
+import { MyIcon } from '../../myIcon/MyIcon';
 
 type navLink = {
   label: string;
