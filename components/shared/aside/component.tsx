@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import Navigation from '../navigation/component';
-import Registration from '../registration/component';
+import { Registration } from '../../registration/component';
 import Image from 'next/image';
 
 const navItems = [
