@@ -1,5 +1,9 @@
+import { Switch } from '@/components/ui';
+
 export default function Home() {
   return (
-    <main className="grid place-items-center bg-bg text-2xl ">main page</main>
+    <main className="grid place-items-center bg-bg text-2xl ">
+      <Switch />
+    </main>
   );
 }

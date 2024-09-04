@@ -1,6 +1,6 @@
 'use client';
 
-import { signIn, useSession } from 'next-auth/react';
+import { signIn } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { Button, Input } from '../../ui';
 
@@ -13,14 +13,12 @@ import {
   FormControl,
   FormField,
   FormItem,
-  FormLabel,
   FormMessage,
 } from '@/components/ui/form';
 import React from 'react';
 
 export default function SignInForm() {
   const router = useRouter();
-  const session = useSession();
   const [validAuth, setValidAuth] = React.useState<boolean | undefined>(false);
 
   const formSchema = z.object({

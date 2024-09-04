@@ -12,3 +12,4 @@ export { Sheet } from './sheet';
 export { Skeleton } from './skeleton';
 export { Slider } from './slider';
 export { Tooltip } from './tooltip';
+export { Switch } from './switch';
