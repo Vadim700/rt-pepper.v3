@@ -2,7 +2,7 @@
 
 import { signIn } from 'next-auth/react';
 import { useSearchParams } from 'next/navigation';
-import { Button } from '../ui';
+import { Button } from '../../ui';
 
 export default function GoogleButton() {
   const searchParams = useSearchParams();

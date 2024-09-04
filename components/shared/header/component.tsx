@@ -1,10 +1,8 @@
 import { cn } from '@/lib/utils';
 import React from 'react';
 import { Container } from '../container/component';
-import { MyIcon } from '@/components/myIcon/MyIcon';
-import { CircleUserRound } from 'lucide-react';
-import { Select } from '@/components/ui/select';
 import { Profile } from '../profile/component';
+import { Topic } from '../topic/component';
 
 interface Props {
   className?: string;
@@ -19,7 +17,7 @@ export const Header: React.FC<Props> = ({ className }) => {
       )}
     >
       <Container className="flex items-center justify-between">
-        Confident Pepper
+        <Topic />
         <Profile />
       </Container>
     </header>

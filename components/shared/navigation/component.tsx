@@ -2,7 +2,8 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import styles from './styles.module.scss';
-import { MyIcon } from '../../myIcon/MyIcon';
+import { MyIcon } from '../myIcon/MyIcon';
+import { usePageTopicStore } from '@/store/topic';
 
 type navLink = {
   label: string;
@@ -15,6 +16,12 @@ type prop = {
 
 export default function Navigation({ navLinks }: prop) {
   const pathname = usePathname();
+  let { topic, updatePageTopic } = usePageTopicStore();
+
+  const handleUpdateTopic = (label: string) => {
+    topic = label;
+    updatePageTopic(label);
+  };
 
   return (
     <nav className="">
@@ -30,8 +37,16 @@ export default function Navigation({ navLinks }: prop) {
                   : `flex items-center gap-4 ${styles.navItem} `
               }
             >
-              <MyIcon name={link.icon} size={30} className="transition-all transition-duration: 150ms" />
-              <Link href={link.href} className="transition-all transition-duration: 150ms">
+              <MyIcon
+                name={link.icon}
+                size={30}
+                className="transition-all transition-duration: 150ms"
+              />
+              <Link
+                href={link.href}
+                className="transition-all transition-duration: 150ms"
+                onClick={() => handleUpdateTopic(link.label)}
+              >
                 {link.label}
               </Link>
             </li>

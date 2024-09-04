@@ -1,5 +1,5 @@
-import GoogleButton from '@/components/googleButton/GoogleButton';
-import SignInForm from '@/components/signinForm/component';
+import GoogleButton from '@/components/shared/googleButton/GoogleButton';
+import SignInForm from '@/components/shared/signinForm/component';
 import { Suspense } from 'react';
 
 export default async function Singnin() {
