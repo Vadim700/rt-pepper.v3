@@ -21,8 +21,11 @@ const config: Config = {
         brik: '#DDA15E',
         ginger: '#BC6C25',
         bg: '#EBEBEB',
-        background: 'hsl(var(--background))',
+        'bg-dark': '#666',
+        
+        background: 'hsl(var(--background-aside))',
         foreground: 'hsl(var(--foreground))',
+
         card: {
           DEFAULT: 'hsl(var(--card))',
           foreground: 'hsl(var(--card-foreground))',

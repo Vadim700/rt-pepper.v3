@@ -10,7 +10,7 @@ const navItems = [
 
 export default function Aside() {
   return (
-    <aside className="grid grid-rows-[auto_1fr_auto] row-span-2 p-12 bg-white-green text-white min-w-80">
+    <aside className="grid grid-rows-[auto_1fr_auto] row-span-2 p-12 bg-white-green text-white min-w-80 dark:bg-dark-green dark:text-light-yellow">
       <Logo />
       <Navigation navLinks={navItems} />
       <Registration />

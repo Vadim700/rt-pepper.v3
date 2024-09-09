@@ -15,7 +15,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning={true}>
       <body className="grid grid-cols-[1fr_4fr] grid-rows-[auto_1fr] h-screen">
         <Providers>
           <Aside />
