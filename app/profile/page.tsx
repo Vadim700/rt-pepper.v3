@@ -7,9 +7,9 @@ const Profile = async () => {
   const session = await getServerSession(authConfig);
 
   return (
-    <main className="bg-bg flex flex-col justify-center items-center">
+    <main className="bg-bg dark:bg-bg-dark flex flex-col justify-center items-center">
       <h1 className="mb-12 text-3xl">
-        Profile of <span className="text-ginger">{session?.user?.name}</span>
+        Profile of <span className="text-ginger dark:text-light-green">{session?.user?.name}</span>
       </h1>
       {session?.user?.image && (
         <Image
@@ -23,7 +23,7 @@ const Profile = async () => {
       {session?.user?.email && (
         <Link
           href={`mailto:${session.user.email}`}
-          className="text-lg text-dark-green"
+          className="text-lg text-dark-green dark:text-light-yellow"
         >
           {session.user.email}
         </Link>

@@ -13,7 +13,7 @@ export const Header: React.FC<Props> = ({ className }) => {
   return (
     <header
       className={cn(
-        'flex py-8 justify-between items-center font-bold text-3xl',
+        'flex py-8 justify-between items-center font-bold text-3xl dark:text-light-yellow',
         className,
       )}
     >
