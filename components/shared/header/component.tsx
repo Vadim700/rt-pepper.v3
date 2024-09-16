@@ -4,6 +4,7 @@ import { Container } from '../container/component';
 import { Profile } from '../profile/component';
 import { Topic } from '../topic/component';
 import { ThemeSwitcher } from '../themSwitcher/component';
+import { SelectLanguage } from '../selectLanguage/component';
 
 interface Props {
   className?: string;
@@ -19,7 +20,8 @@ export const Header: React.FC<Props> = ({ className }) => {
     >
       <Container className={cn('flex items-center justify-between gap-4')}>
         <Topic />
-        <ThemeSwitcher className="ml-auto mr-5 flex items-center gap-3" />
+        <ThemeSwitcher className="flex items-center gap-3" />
+        <SelectLanguage className="max-w-50" />
         <Profile />
       </Container>
     </header>
