@@ -1,12 +1,14 @@
 import * as React from 'react';
+import { getDictionary } from '../dictionaries';
 
-export default function Home({ params }: any) {
+export default async function Home({ params }: any) {
   const { lang } = params;
-  console.log('page lang', lang);
+  const dict = await getDictionary(lang);
 
   return (
     <main className="grid place-items-center bg-bg dark:bg-bg-dark text-2xl">
-      main
+      Main Page <br />
+      {dict.sideBar.logo}
     </main>
   );
 }

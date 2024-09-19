@@ -3,6 +3,7 @@ import { Header } from '@/components/shared/header/component';
 import { Providers } from '@/components/providers/Providers';
 import Aside from '@/components/shared/aside/component';
 import '../../styles/globals.css';
+import { getDictionary } from '../dictionaries';
 
 export const metadata: Metadata = {
   title: 'RT Pepper',
@@ -10,21 +11,27 @@ export const metadata: Metadata = {
 };
 
 export async function generateStaticParams() {
-  return [{ lang: 'en-US' }, { lang: 'de' }];
+  return [{ lang: 'en-US' }, { lang: 'nl' }];
 }
 
-export default function RootLayout({
-  children,
-  lang,
-}: Readonly<{
+type Props = {
   children: React.ReactNode;
-  lang: string;
-}>) {
+  params: { lang: string };
+};
+
+export default async function RootLayout({
+  children,
+  params: { lang },
+}: Readonly<Props>) {
+  
+  const dict = await getDictionary(lang);
+  console.log(dict);
+
   return (
     <html lang={lang} suppressHydrationWarning={true}>
       <body className="grid grid-cols-[1fr_4fr] grid-rows-[auto_1fr] h-screen">
         <Providers>
-          <Aside />
+          <Aside lang={lang} dict={dict} />
           <Header />
           {children}
         </Providers>
