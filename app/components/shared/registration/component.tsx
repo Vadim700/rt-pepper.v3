@@ -4,41 +4,56 @@ import Link from 'next/link';
 import { useSession, signOut } from 'next-auth/react';
 import { MyIcon } from '../myIcon/MyIcon';
 import { usePageTopicStore } from '@/store/topic';
+import { usePathname } from 'next/navigation';
+import { cn } from '@/lib/utils';
+import styles from './style.module.scss';
 
-interface Props {}
+type Prop = {
+  lang: string;
+  dict: any;
+};
 
-export const Registration: React.FC<Props> = () => {
+export const Registration = ({ lang, dict }: Prop) => {
   const session = useSession();
   let { updatePageTopic } = usePageTopicStore();
+  const pathname = usePathname();
+
+  const isActive = pathname.split('/').pop() === 'profile';
 
   return (
     <div className="flex flex-col text-lg">
       {session?.data && (
         <Link
-          href={'/profile'}
-          className="text-lx mb-6 flex items-center gap-4 pl-2"
+          href={`/${lang}/profile`}
+          className={cn(
+            'text-lx mb-6 flex items-center gap-4 pl-2',
+            isActive ? `text-ginger` : '',
+            'hover:text-ginger',
+            'transition-duration-150',
+          )}
           onClick={() => updatePageTopic('Profile')}
         >
-          <MyIcon name={'profile'} size={40} className="" /> Profile
+          <MyIcon name={'profile'} size={40} className="" />{' '}
+          {dict.sideBar.profile}
         </Link>
       )}
       {session?.data ? (
         <Link
           href={'#'}
-          onClick={() => signOut({ callbackUrl: '/' })}
+          onClick={() => signOut({ callbackUrl: '/' + lang })}
           className="flex items-center gap-6"
         >
           <MyIcon name={'logout'} size={40} />
-          Sign Out
+          {dict.sideBar.signOut}
         </Link>
       ) : (
         <Link
-          href={'/signin'}
+          href={`/${lang}/signin`}
           className="flex items-center gap-6"
           onClick={() => updatePageTopic('Sign In')}
         >
           <MyIcon name="signIn" size={40} />
-          Sign In
+          {dict.sideBar.signIn}
         </Link>
       )}
     </div>

@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
-import { Header } from '@/components/shared/header/component';
-import { Providers } from '@/components/providers/Providers';
-import Aside from '@/components/shared/aside/component';
+import { Header } from '@/app/components/shared/header/component';
+import { Providers } from '@/app/components/providers/Providers';
+import Aside from '@/app/components/shared/aside/component';
 import '../../styles/globals.css';
 import { getDictionary } from '../dictionaries';
 
@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 };
 
 export async function generateStaticParams() {
-  return [{ lang: 'en-US' }, { lang: 'nl' }];
+  return [{ lang: 'en' }, { lang: 'ru' }, {lang: 'es'}];
 }
 
 type Props = {
@@ -23,18 +23,17 @@ export default async function RootLayout({
   children,
   params: { lang },
 }: Readonly<Props>) {
-  
+
   const dict = await getDictionary(lang);
-  console.log(dict);
 
   return (
     <html lang={lang} suppressHydrationWarning={true}>
       <body className="grid grid-cols-[1fr_4fr] grid-rows-[auto_1fr] h-screen">
         <Providers>
           <Aside lang={lang} dict={dict} />
-          <Header />
+          <Header lang={ lang } />
           {children}
-        </Providers>
+        </Providers >
       </body>
     </html>
   );

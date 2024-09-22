@@ -2,11 +2,12 @@
   "sideBar": {
     "logo": "Уверенный перец",
     "menu": {
-      "posts": "Посты",
+      "posts": "Сообщения",
       "photos": "Галерея",
       "todos": "Задачи"
     },
     "profile": "Профиль",
-    "signOut": "Выход"
+    "signOut": "Выход",
+    "signIn": "Войти"
   }
 }

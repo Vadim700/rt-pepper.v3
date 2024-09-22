@@ -14,7 +14,7 @@ export const Logo = async ({ dict, lang }: LogoProps) => {
   // let { resetPageTopic } = usePageTopicStore();
 
   return (
-    <Link href={lang} className="flex flex-col gap-4 items-center mb-8">
+    <Link href={'/' + lang} className="flex flex-col gap-4 items-center mb-8">
       <svg
         width="100px"
         height="100px"
@@ -53,7 +53,7 @@ export const Logo = async ({ dict, lang }: LogoProps) => {
           ></path>
         </g>
       </svg>
-      <h2 className="text-xl uppercase mb-4">{ dict.sideBar.logo }</h2>
+      <h2 className="text-xl uppercase mb-4">{dict.sideBar.logo}</h2>
     </Link>
   );
 };

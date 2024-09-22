@@ -1,6 +1,6 @@
 'use client';
 
-import { Toggle } from '@/components/ui';
+import { Toggle } from '@/app/components/ui';
 import { cn } from '@/lib/utils';
 import { Moon, Sun } from 'lucide-react';
 import { useTheme } from 'next-themes';

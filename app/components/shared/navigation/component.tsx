@@ -12,9 +12,10 @@ type navLink = {
 };
 type prop = {
   navLinks: navLink[];
+  lang: string;
 };
 
-export default function Navigation({ navLinks }: prop) {
+export default function Navigation({ navLinks, lang }: prop) {
   const pathname = usePathname();
   let { topic, updatePageTopic } = usePageTopicStore();
 
@@ -27,7 +28,7 @@ export default function Navigation({ navLinks }: prop) {
     <nav className="">
       <ul className="flex gap-8 flex-col text-xl">
         {navLinks.map((link) => {
-          const isActive = pathname === link.href;
+          const isActive = pathname.split('/').pop() === link.href.split('/').pop();
           return (
             <li
               key={link.label}

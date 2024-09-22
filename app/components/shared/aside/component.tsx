@@ -9,16 +9,16 @@ type Props = {
 
 export default function Aside({ dict, lang }: Props) {
   const navItems = [
-    { label: 'Posts', href: '/posts', icon: 'posts' },
-    { label: 'Photos', href: '/photo', icon: 'photos' },
-    { label: 'Todos', href: '/todos', icon: 'todos' },
+    { label: dict.sideBar.menu.posts, href: `/${lang}/posts`, icon: 'posts' },
+    { label: dict.sideBar.menu.photos, href: `/${lang}/photo`, icon: 'photos' },
+    { label: dict.sideBar.menu.todos, href: `/${lang}/todos`, icon: 'todos' },
   ];
 
   return (
     <aside className="grid grid-rows-[auto_1fr_auto] row-span-2 p-12 bg-white-green text-white min-w-80 dark:bg-dark-green dark:text-light-yellow">
       <Logo dict={dict} lang={lang} />
-      <Navigation navLinks={navItems} />
-      <Registration />
+      <Navigation navLinks={navItems} lang={lang} />
+      <Registration dict={dict} lang={lang} />
     </aside>
   );
 }

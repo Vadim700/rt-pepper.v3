@@ -1,0 +1,13 @@
+{
+  "sideBar": {
+    "logo": "Pimiento seguro",
+    "menu": {
+      "posts": "Publicaciones",
+      "photos": "Galería",
+      "todos": "Tareas"
+    },
+    "profile": "Perfil",
+    "signOut": "Cerrar sesión",
+    "signIn": "Iniciar sesión"
+  }
+}

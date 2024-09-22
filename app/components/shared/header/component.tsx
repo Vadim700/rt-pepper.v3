@@ -9,9 +9,10 @@ import Link from 'next/link';
 
 interface Props {
   className?: string;
+  lang: string;
 }
 
-export const Header: React.FC<Props> = ({ className }) => {
+export const Header: React.FC<Props> = ({ className, lang }) => {
   return (
     <header
       className={cn(
@@ -22,9 +23,7 @@ export const Header: React.FC<Props> = ({ className }) => {
       <Container className={cn('flex items-center justify-between gap-4')}>
         <Topic />
         <ThemeSwitcher className="flex items-center gap-3" />
-        <Link href={'en'}>EN</Link>
-        <Link href={'nl'}>NL</Link>
-        <SelectLanguage className="max-w-50" />
+        <SelectLanguage className="max-w-50" lang={lang} />
         <Profile />
       </Container>
     </header>

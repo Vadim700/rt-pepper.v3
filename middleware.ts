@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { match } from '@formatjs/intl-localematcher';
 import Negotiator from 'negotiator';
-import { defaultLocale } from '@constants/locales';
+import { defaultLocale } from '@/constants/locales';
 import { i18n } from './i18n-config';
 
 export { default } from 'next-auth/middleware';
@@ -11,7 +11,7 @@ let languages = new Negotiator({ headers }).languages();
 
 export function middleware(request: NextRequest) {
   // Check if there is any supported locale in the pathname
-  const { pathname } = request.nextUrl;
+  const { pathname } = request.nextUrl;   // -> /api/auth/session
 
   if (
     pathname.startsWith(`/${defaultLocale}/`) ||
