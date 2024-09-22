@@ -1,0 +1,13 @@
+{
+  "sideBar": {
+    "logo": "confident pepper",
+    "menu": {
+      "posts": "Posts",
+      "photos": "Photos",
+      "todos": "Todos"
+    },
+    "profile": "Pfofile",
+    "signOut": "Sign Out",
+    "signIn": "Sign In"
+  }
+}
