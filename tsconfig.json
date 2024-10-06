@@ -19,7 +19,7 @@
       }
     ],
     "paths": {
-      "@constants/*":["constants/*"],
+      "@constants/*": ["constants/*"],
       "@components/*": [".app/[lang]/components/*"],
       "@/*": ["./*"]
     }

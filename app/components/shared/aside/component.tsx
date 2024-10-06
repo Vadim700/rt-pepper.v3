@@ -1,6 +1,7 @@
 import Navigation from '../navigation/component';
 import { Registration } from '../registration/component';
 import { Logo } from '../logo/component';
+import { useEffect } from 'react';
 
 type Props = {
   dict: any;
@@ -10,7 +11,7 @@ type Props = {
 export default function Aside({ dict, lang }: Props) {
   const navItems = [
     { label: dict.sideBar.menu.posts, href: `/${lang}/posts`, icon: 'posts' },
-    { label: dict.sideBar.menu.photos, href: `/${lang}/photo`, icon: 'photos' },
+    { label: dict.sideBar.menu.photos, href: `/${lang}/photos`, icon: 'photos' },
     { label: dict.sideBar.menu.todos, href: `/${lang}/todos`, icon: 'todos' },
   ];
 

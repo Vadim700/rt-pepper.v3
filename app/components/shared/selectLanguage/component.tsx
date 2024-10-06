@@ -12,24 +12,26 @@ import {
 import { cn } from '@/lib/utils';
 import styles from './style.module.scss';
 import { usePathname, useRouter } from 'next/navigation';
+import { usePageTopicStore } from '@/store/topic';
 
 interface Props {
   className?: string;
   lang: string;
+  dict: any;
 }
 
-export const SelectLanguage = ({ className, lang }: Props) => {
+export const SelectLanguage = ({ className, lang, dict }: Props) => {
   const router = useRouter();
   const path = usePathname();
+  let { topic, updatePageTopic } = usePageTopicStore();
 
   const replacePath = (value: string) => {
-    const languages = ['ru', 'en', 'es'];
+    const languages: string[] = ['ru', 'en', 'es'];
     const segments = path.split('/').filter(Boolean);
 
     if (languages.includes(segments[0])) {
       segments.shift();
     }
-
     segments.unshift(value);
 
     return '/' + segments.join('/');

@@ -10,9 +10,10 @@ import Link from 'next/link';
 interface Props {
   className?: string;
   lang: string;
+  dict: any;
 }
 
-export const Header: React.FC<Props> = ({ className, lang }) => {
+export const Header: React.FC<Props> = ({ className, lang, dict }) => {
   return (
     <header
       className={cn(
@@ -23,7 +24,7 @@ export const Header: React.FC<Props> = ({ className, lang }) => {
       <Container className={cn('flex items-center justify-between gap-4')}>
         <Topic />
         <ThemeSwitcher className="flex items-center gap-3" />
-        <SelectLanguage className="max-w-50" lang={lang} />
+        <SelectLanguage className="max-w-50" lang={lang} dict={dict} />
         <Profile />
       </Container>
     </header>

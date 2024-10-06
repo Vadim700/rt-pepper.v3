@@ -7,7 +7,6 @@ export default async function Home({ params }: any) {
 
   return (
     <main className="grid place-items-center bg-bg dark:bg-bg-dark text-2xl">
-      Main Page <br />
       {dict.sideBar.logo}
     </main>
   );

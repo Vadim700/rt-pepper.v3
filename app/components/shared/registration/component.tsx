@@ -20,6 +20,12 @@ export const Registration = ({ lang, dict }: Prop) => {
 
   const isActive = pathname.split('/').pop() === 'profile';
 
+  React.useEffect(() => {
+    if (pathname.split('/').includes('profile')) {
+      updatePageTopic(dict.sideBar.profile);
+    }
+  }, [lang, pathname, dict.sideBar.profile, updatePageTopic]);
+
   return (
     <div className="flex flex-col text-lg">
       {session?.data && (
@@ -31,7 +37,7 @@ export const Registration = ({ lang, dict }: Prop) => {
             'hover:text-ginger',
             'transition-duration-150',
           )}
-          onClick={() => updatePageTopic('Profile')}
+          onClick={() => updatePageTopic(dict.sideBar.profile)}
         >
           <MyIcon name={'profile'} size={40} className="" />{' '}
           {dict.sideBar.profile}

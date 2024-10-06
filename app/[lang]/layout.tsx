@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 };
 
 export async function generateStaticParams() {
-  return [{ lang: 'en' }, { lang: 'ru' }, {lang: 'es'}];
+  return [{ lang: 'en' }, { lang: 'ru' }, { lang: 'es' }];
 }
 
 type Props = {
@@ -23,7 +23,6 @@ export default async function RootLayout({
   children,
   params: { lang },
 }: Readonly<Props>) {
-
   const dict = await getDictionary(lang);
 
   return (
@@ -31,9 +30,9 @@ export default async function RootLayout({
       <body className="grid grid-cols-[1fr_4fr] grid-rows-[auto_1fr] h-screen">
         <Providers>
           <Aside lang={lang} dict={dict} />
-          <Header lang={ lang } />
+          <Header lang={lang} dict={dict} />
           {children}
-        </Providers >
+        </Providers>
       </body>
     </html>
   );

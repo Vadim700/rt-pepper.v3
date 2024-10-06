@@ -1,6 +1,6 @@
 {
   "sideBar": {
-    "logo": "confident pepper",
+    "logo": "Confident pepper",
     "menu": {
       "posts": "Posts",
       "photos": "Photos",
@@ -9,5 +9,6 @@
     "profile": "Pfofile",
     "signOut": "Sign Out",
     "signIn": "Sign In"
-  }
+  },
+  "photo": "Photo"
 }
