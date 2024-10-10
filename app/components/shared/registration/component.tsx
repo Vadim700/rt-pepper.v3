@@ -15,7 +15,7 @@ type Prop = {
 
 export const Registration = ({ lang, dict }: Prop) => {
   const session = useSession();
-  let { updatePageTopic } = usePageTopicStore();
+  const { updatePageTopic } = usePageTopicStore();
   const pathname = usePathname();
 
   const isActive = pathname.split('/').pop() === 'profile';

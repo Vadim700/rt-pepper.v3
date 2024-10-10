@@ -1,20 +1,23 @@
-// 'use client';
+'use client';
 import Link from 'next/link';
 import React from 'react';
 import Image from 'next/image';
 import { usePageTopicStore } from '@/store/topic';
-import { getDictionary } from '@/app/dictionaries';
 
 interface LogoProps {
   dict: any;
   lang: string;
 }
 
-export const Logo = async ({ dict, lang }: LogoProps) => {
-  // let { resetPageTopic } = usePageTopicStore();
+export const Logo = ({ dict, lang }: LogoProps) => {
+  const { updatePageTopic } = usePageTopicStore();
 
   return (
-    <Link href={'/' + lang} className="flex flex-col gap-4 items-center mb-8">
+    <Link
+      href={'/' + lang}
+      className="flex flex-col gap-4 items-center mb-8"
+      onClick={() => updatePageTopic(dict.sideBar.logo)}
+    >
       <svg
         width="100px"
         height="100px"
