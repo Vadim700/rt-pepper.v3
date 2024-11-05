@@ -16,7 +16,7 @@ export default function Aside({ dict, lang }: Props) {
   ];
 
   return (
-    <aside className="grid grid-rows-[auto_1fr_auto] row-span-2 p-12 bg-white-green text-white min-w-80 dark:bg-dark-green dark:text-light-yellow">
+    <aside className="grid grid-rows-[auto_1fr_auto] row-span-2 p-12 bg-white-green text-white min-w-80 dark:bg-dark-green dark:text-light-yellow h-lvh">
       <Logo dict={dict} lang={lang} />
       <Navigation navLinks={navItems} lang={lang} />
       <Registration dict={dict} lang={lang} />

@@ -1,7 +1,8 @@
-import { NextResponse } from 'next/server';
-import { posts } from '../../../../data/posts';
+import { prisma } from '@/prisma/prisma-client';
+import { NextRequest, NextResponse } from 'next/server';
 
-export async function GET(req: Request) {
+export async function GET(req: NextRequest) {
+  const posts = await prisma.post.findMany();
   const { searchParams } = new URL(req.url);
 
   const query = searchParams.get('q');
@@ -17,8 +18,14 @@ export async function GET(req: Request) {
   return NextResponse.json(currentPosts);
 }
 
-export async function POST(req: Response) {
-  const body = await req.json();
+export async function POST(req: NextRequest) {
+  const data = await req.json();
 
-  return NextResponse.json({ body });
+  const post = await prisma.post.create({
+    data,
+  });
+
+  return NextResponse.json(post);
 }
+
+

@@ -1,5 +1,4 @@
 import { create } from 'zustand';
-import { getDictionary } from '../app/dictionaries';
 
 interface TopicStore {
   topic: string;
