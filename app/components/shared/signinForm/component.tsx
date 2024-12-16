@@ -42,7 +42,7 @@ export default function SignInForm() {
     });
 
     if (res && res.ok) {
-      router.push('/profile'); // перенаправить на /profile
+      router.push('/profile');
     } else {
       setValidAuth(true);
     }
@@ -53,7 +53,7 @@ export default function SignInForm() {
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
-          className="flex flex-col gap-9"
+          className="flex flex-col gap-9 mb-9"
         >
           <FormField
             control={form.control}
@@ -63,7 +63,7 @@ export default function SignInForm() {
                 <FormControl>
                   <Input placeholder="email" type="email" {...field} />
                 </FormControl>
-                <FormMessage className="absolute bottom-[-25px] left-1 text-left text-sm" />
+                <FormMessage className="absolute left-1 text-left text-sm" />
               </FormItem>
             )}
           />
@@ -75,7 +75,7 @@ export default function SignInForm() {
                 <FormControl>
                   <Input placeholder="password" type="password" {...field} />
                 </FormControl>
-                <FormMessage className="absolute bottom-[-25px] left-1 text-left text-sm" />
+                <FormMessage className="absolute left-1 text-left text-sm" />
               </FormItem>
             )}
           />
