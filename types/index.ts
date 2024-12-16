@@ -6,7 +6,7 @@ export type propIcon = {
 
 export type Post = {
   id: number;
-  userId: number;
+  userId?: number;
   title: String;
   body: String;
 };

@@ -9,7 +9,10 @@ const Profile = async () => {
   return (
     <main className="bg-bg dark:bg-bg-dark flex flex-col justify-center items-center">
       <h1 className="mb-12 text-3xl">
-        Profile of <span className="text-ginger dark:text-light-green">{session?.user?.name}</span>
+        Profile of{' '}
+        <span className="text-ginger dark:text-light-green">
+          {session?.user?.name}
+        </span>
       </h1>
       {session?.user?.image && (
         <Image
@@ -27,7 +30,6 @@ const Profile = async () => {
         >
           {session.user.email}
         </Link>
-        
       )}
     </main>
   );

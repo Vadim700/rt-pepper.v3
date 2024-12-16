@@ -47,3 +47,9 @@ html {
 		@apply bg-background text-foreground;
 	}
 }
+
+@layer components {
+  .grid-auto-fill {
+    @apply grid grid-cols-[repeat(auto-fill,minmax(300px,1fr))];
+  }
+}
