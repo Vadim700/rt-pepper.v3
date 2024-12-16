@@ -36,20 +36,19 @@ export const PostsList: React.FC<Props> = ({
     }
   };
 
-
   return (
     <div className={cn(className, 'w-full flex flex-col gap-10 p-10')}>
       <AddPostForm addPost={addPostsAction} />
       <div className="grid-auto-fill gap-4">
         {postList
-          .sort((a,b) => a.id - b.id)
+          .sort((a, b) => a.id - b.id)
           .map((post) => (
-          <PostItem
-            key={post.id}
-            post={post}
-            onClickDelete={handleClickDeleteBtn}
-          />
-        ))}
+            <PostItem
+              key={post.id}
+              post={post}
+              onClickDelete={handleClickDeleteBtn}
+            />
+          ))}
       </div>
     </div>
   );

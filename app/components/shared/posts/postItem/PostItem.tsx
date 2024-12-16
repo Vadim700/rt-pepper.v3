@@ -14,6 +14,17 @@ export const PostItem: React.FC<Props> = ({
   post,
   onClickDelete,
 }) => {
+  const createdAt = post.createdAt;
+
+  const formattedDate = new Date(createdAt as string).toLocaleDateString(
+    'ru-RU',
+    {
+      year: 'numeric',
+      month: 'numeric',
+      day: 'numeric',
+    },
+  );
+
   return (
     <div className={cn(className, 'border rounded-[6px] py-4 px-6 relative')}>
       <span>{post.id}</span>
@@ -24,6 +35,7 @@ export const PostItem: React.FC<Props> = ({
         id={post.id}
         onClickDelete={onClickDelete}
       />
+      <p className="text-sm text-end">{formattedDate}</p>
     </div>
   );
 };
