@@ -2,14 +2,14 @@ import { PostsList } from '@/app/components/shared/posts/postsList/PostList';
 import { getDictionary } from '@/app/dictionaries';
 import { addNewPost, deletePost, getAllPosts } from '@/services/postsActions';
 import type { Post } from '@/types';
-
-import React from 'react';
+import { getServerSession } from 'next-auth/next';
 
 export default async function Posts({ params }: any) {
   const { lang } = params;
 
   const dict = await getDictionary(lang);
   const posts: Post[] = await getAllPosts();
+  const session = await getServerSession();
 
   const onDelete = async (id: number) => {
     'use server';
@@ -29,6 +29,8 @@ export default async function Posts({ params }: any) {
       console.log('Не получилось добавить пост. Ошибка из [Posts]');
     }
   };
+
+
 
   return (
     <main className="grid  text-2xl  bg-bg dark:bg-bg-dark dark:text-light-yellow overflow-y-auto">

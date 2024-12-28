@@ -1,4 +1,3 @@
-import * as React from 'react';
 import { getDictionary } from '../dictionaries';
 
 export default async function Home({ params }: any) {

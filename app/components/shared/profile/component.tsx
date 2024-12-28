@@ -12,7 +12,6 @@ interface Props {
 
 export const Profile: React.FC<Props> = async ({ className }) => {
   const session = await getServerSession(authConfig);
-  console.log(session)
 
   return (
     <div className={cn('grid place-content-center', className)}>
@@ -28,7 +27,7 @@ export const Profile: React.FC<Props> = async ({ className }) => {
         </Link>
       ) : (
         <Link
-            href={ session ? '/profile' : '/signup' }
+          href={session ? '/profile' : '/signup'}
           className="rounded-[50%] bg-brik inline-block p-1 "
         >
           <UserRound size={35} color="#000000" strokeWidth={2} />

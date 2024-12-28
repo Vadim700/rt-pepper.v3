@@ -1,5 +1,6 @@
 import type { AuthOptions, User } from 'next-auth';
 import GoggleProvider from 'next-auth/providers/google';
+import GitHubProvider from 'next-auth/providers/github';
 import Credentials from 'next-auth/providers/credentials';
 import { users } from '@/public/data/users';
 
@@ -30,6 +31,10 @@ export const authConfig: AuthOptions = {
 
         return null;
       },
+    }),
+    GitHubProvider({
+      clientId: process.env.GITHUB_ID || '',
+      clientSecret: process.env.GITHUB_SECRET || '',
     }),
   ],
   pages: {

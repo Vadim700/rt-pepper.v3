@@ -9,6 +9,8 @@ export type Post = {
   userId?: number;
   title: String;
   body: String;
+  autor: String;
+  avatar: string;
   createdAt: String;
 };
 
