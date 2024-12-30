@@ -14,3 +14,4 @@ export { Slider } from './slider';
 export { Tooltip } from './tooltip';
 export { Switch } from './switch';
 export { Toggle } from './toggle';
+export { Dialog } from './dialog';

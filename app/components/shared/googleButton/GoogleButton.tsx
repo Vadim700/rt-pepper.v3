@@ -9,8 +9,12 @@ export default function GoogleButton() {
   const callbackUrl = searchParams.get('callbackUrl') || '/profile';
 
   return (
-    <Button onClick={() => signIn('google', { callbackUrl })} className='mb-8'>
-      Sign in with Google
-    </Button>
+    <button onClick={() => signIn('google', { callbackUrl })} className="">
+      <img
+        className="h-16"
+        src="https://fonts.gstatic.com/s/i/productlogos/googleg/v6/24px.svg"
+        alt='google icon'
+      />
+    </button>
   );
 }

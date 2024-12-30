@@ -9,8 +9,12 @@ export default function GithubButton() {
   const callbackUrl = searchParams.get('callbackUrl') || '/profile';
 
   return (
-    <Button onClick={() => signIn('github', { callbackUrl })} className="mb-8">
-      Sign in with Github
-    </Button>
+    <button onClick={() => signIn('github', { callbackUrl })} className="">
+      <img
+        className="h-16"
+        src="https://github.githubassets.com/favicons/favicon.svg"
+        alt="github icon"
+      />
+    </button>
   );
 }

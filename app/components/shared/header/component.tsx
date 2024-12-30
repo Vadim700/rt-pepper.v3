@@ -5,7 +5,7 @@ import { Profile } from '../profile/component';
 import { Topic } from '../topic/component';
 import { ThemeSwitcher } from '../themSwitcher/component';
 import { SelectLanguage } from '../selectLanguage/component';
-import Link from 'next/link';
+import { AuthModal } from '../modals/auth-modal';
 
 interface Props {
   className?: string;
@@ -27,6 +27,7 @@ export const Header: React.FC<Props> = ({ className, lang, dict }) => {
         <SelectLanguage className="max-w-50" lang={lang} dict={dict} />
         <Profile />
       </Container>
+
     </header>
   );
 };

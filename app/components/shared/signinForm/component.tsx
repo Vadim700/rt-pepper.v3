@@ -82,7 +82,7 @@ export default function SignInForm() {
           <Button type="submit">Sign In</Button>
         </form>
         {validAuth && (
-          <p className="absolute bottom-[-30px] left-0 text-red-500">
+          <p className="absolute bottom-[10px] left-0 text-red-500">
             Opps!.. unauthorized
           </p>
         )}
