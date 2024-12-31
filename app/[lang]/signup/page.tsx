@@ -6,7 +6,7 @@ interface Props {
   className?: string;
 }
 
-const SignUp: React.FC<Props> = ({ className }) => {
+const SignUp: React.FC = ({ className }: Props) => {
   return (
     <main
       className={cn(
@@ -14,8 +14,8 @@ const SignUp: React.FC<Props> = ({ className }) => {
         'bg-bg dark:bg-bg-dark dark:text-light-yellow grid place-content-center text-center',
       )}
     >
-			<h1 className="mb-8 text-4xl">Sign Up Form</h1>
-			<SingUpForm />
+      <h1 className="mb-8 text-4xl">Sign Up Form</h1>
+      <SingUpForm />
     </main>
   );
 };

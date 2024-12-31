@@ -29,7 +29,7 @@ export default async function RootLayout({
   return (
     <html lang={lang} suppressHydrationWarning={true}>
       <body className="grid grid-cols-[1fr_4fr] grid-rows-[auto_1fr] h-screen">
-      <NextTopLoader color='#BC6C25'/>
+      {/* <NextTopLoader color='#BC6C25'/> */}
         <Providers>
           <Aside lang={lang} dict={dict} />
           <Header lang={lang} dict={dict} />

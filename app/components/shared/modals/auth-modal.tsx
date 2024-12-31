@@ -59,15 +59,15 @@ export const AuthModal: React.FC<Props> = ({ className }) => {
   });
 
   const onSubmit = async (values: TRegForm) => {
-    console.log(values);
-    setOpenModal(false);
+    // setOpenModal(false);
+    form.reset();
   };
 
   return (
     <div className={className}>
-      <Dialog open={openModal}>
+      <Dialog /*open={openModal}>*/>
         <DialogTrigger
-          onClick={() => setOpenModal(true)}
+          // onClick={() => setOpenModal(true)}
           className="w-full bg-dark-green text-white hover:opacity-95 uppercase dark:bg-light-yellow dark:text-dark-green inline-flex items-center justify-center whitespace-nowrap rounded-md text-lg font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 min-h-14"
         >
           Sign UP

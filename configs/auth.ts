@@ -18,6 +18,8 @@ export const authConfig: AuthOptions = {
       async authorize(credentials) {
         if (!credentials?.email || !credentials?.password) return null;
 
+        console.log(credentials, '>>> credentials')
+
         const currenUser = users.find(
           (user: { email: string | undefined }) =>
             user.email === credentials?.email,

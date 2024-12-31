@@ -1,0 +1,7 @@
+.active {
+  color: #bc6c25;
+}
+
+.navItem:has(a:hover) svg {
+  color: #bc6c25;
+}/*# sourceMappingURL=styles.module.css.map */
