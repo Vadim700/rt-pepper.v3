@@ -27,7 +27,7 @@ export const Profile: React.FC<Props> = async ({ className }) => {
         </Link>
       ) : (
         <Link
-          href={session ? '/profile' : '/signin'}
+          href={session?.user ? '/profile' : '/signin'}
           className="rounded-[50%] bg-brik inline-block p-1 "
         >
           <UserRound size={35} color="#000000" strokeWidth={2} />

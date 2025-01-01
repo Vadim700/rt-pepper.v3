@@ -22,6 +22,7 @@ export const PostsList: React.FC<Props> = ({
   onAddPost,
 }) => {
   const [postList, setPostList] = React.useState(posts);
+  const session = useSession();
 
   const handleClickDeleteBtn = (id: number) => {
     onClickDelete(id);
@@ -39,7 +40,9 @@ export const PostsList: React.FC<Props> = ({
 
   return (
     <div className={cn(className, 'w-full flex flex-col gap-10 p-10')}>
-      <AddPostForm addPost={addPostsAction} className={className} />
+      {session.data && (
+        <AddPostForm addPost={addPostsAction} className={className} />
+      )}
       <div className="grid-auto-fill gap-4">
         {postList
           .sort((a, b) => a.id - b.id)

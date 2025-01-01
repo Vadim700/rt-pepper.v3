@@ -3,12 +3,18 @@ import GoggleProvider from 'next-auth/providers/google';
 import GitHubProvider from 'next-auth/providers/github';
 import Credentials from 'next-auth/providers/credentials';
 import { users } from '@/public/data/users';
+import { prisma } from '@/prisma/prisma-client';
+import { compare } from 'bcrypt';
 
 export const authConfig: AuthOptions = {
   providers: [
     GoggleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID as string,
       clientSecret: process.env.GOOGLE_SECRET as string,
+    }),
+    GitHubProvider({
+      clientId: process.env.GITHUB_ID || '',
+      clientSecret: process.env.GITHUB_SECRET || '',
     }),
     Credentials({
       credentials: {
@@ -18,27 +24,69 @@ export const authConfig: AuthOptions = {
       async authorize(credentials) {
         if (!credentials?.email || !credentials?.password) return null;
 
-        console.log(credentials, '>>> credentials')
+        const values = {
+          email: credentials.email,
+        };
 
-        const currenUser = users.find(
-          (user: { email: string | undefined }) =>
-            user.email === credentials?.email,
-        );
+        const foundUser = await prisma.user.findFirst({
+          where: values,
+        });
 
-        if (currenUser && currenUser.password === credentials.password) {
-          const { password, ...userWithoutPassword } = currenUser;
-
-          return userWithoutPassword as User;
+        if (!foundUser) {
+          return null;
         }
 
-        return null;
+        // TODO: хэшировать пароль перед отравкой, при регистрации
+        // const isPasswordValid = await compare(
+        //   credentials.password,
+        //   foundUser.password,
+        // );
+
+        const isPasswordValid = credentials.password === foundUser.password;
+
+        if (!isPasswordValid) {
+          return null;
+        }
+
+        return {
+          id: String(foundUser.id),
+          email: foundUser.email,
+          name: foundUser.name,
+          fullName: foundUser.fullName,
+        };
       },
     }),
-    GitHubProvider({
-      clientId: process.env.GITHUB_ID || '',
-      clientSecret: process.env.GITHUB_SECRET || '',
-    }),
   ],
+  secret: process.env.NEXTAUTH_SECRET,
+  session: {
+    strategy: 'jwt',
+  },
+  callbacks: {
+    async jwt({ token }) {
+      const findUser = await prisma.user.findFirst({
+        where: {
+          email: token.email as string,
+        },
+      });
+
+      if (findUser) {
+        token.id = String(findUser.id);
+        token.email = findUser.email;
+        token.name = findUser.name;
+        token.fullName = findUser.fullName;
+      }
+
+      return token;
+    },
+    session({ session, token }) {
+      if (session.user) {
+        session.user.email = token.email;
+      }
+
+      return session;
+    },
+  },
+
   pages: {
     signIn: '/signin',
   },

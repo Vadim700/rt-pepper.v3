@@ -48,11 +48,13 @@ model User {
 
   name     String
   fullName String
-  email    String  @unique
-  phone    String?
-  website  String?
-  address  String?
-  company  String?
+  email    String @unique
+  password String
+
+  phone   String?
+  website String?
+  address String?
+  company String?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
