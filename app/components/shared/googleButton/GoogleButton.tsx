@@ -3,6 +3,7 @@
 import { signIn } from 'next-auth/react';
 import { useSearchParams } from 'next/navigation';
 import { Button } from '../../ui';
+import Image from 'next/image';
 
 export default function GoogleButton() {
   const searchParams = useSearchParams();
@@ -10,10 +11,12 @@ export default function GoogleButton() {
 
   return (
     <button onClick={() => signIn('google', { callbackUrl })} className="">
-      <img
-        className="h-16"
+      <Image
         src="https://fonts.gstatic.com/s/i/productlogos/googleg/v6/24px.svg"
-        alt='google icon'
+        className="block w-16 h-16"
+        alt="google icon"
+        height={16}
+        width={16}
       />
     </button>
   );

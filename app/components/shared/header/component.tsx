@@ -27,7 +27,6 @@ export const Header: React.FC<Props> = ({ className, lang, dict }) => {
         <SelectLanguage className="max-w-50" lang={lang} dict={dict} />
         <Profile />
       </Container>
-
     </header>
   );
 };

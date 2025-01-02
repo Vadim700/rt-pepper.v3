@@ -2,7 +2,6 @@ import type { AuthOptions, User } from 'next-auth';
 import GoggleProvider from 'next-auth/providers/google';
 import GitHubProvider from 'next-auth/providers/github';
 import Credentials from 'next-auth/providers/credentials';
-import { users } from '@/public/data/users';
 import { prisma } from '@/prisma/prisma-client';
 import { compare } from 'bcrypt';
 

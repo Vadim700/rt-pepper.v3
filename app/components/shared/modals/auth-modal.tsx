@@ -1,5 +1,5 @@
 'use client';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Dialog,
   DialogContent,
@@ -20,12 +20,14 @@ import {
   FormMessage,
 } from '@/app/components/ui/form';
 import { Button, Input } from '../../ui';
+import { User } from '@prisma/client';
 
 interface Props {
   className?: string;
+  regNewUser: (data: any) => Promise<void>;
 }
 
-export const AuthModal: React.FC<Props> = ({ className }) => {
+export const AuthModal: React.FC<Props> = ({ className, regNewUser }) => {
   const [openModal, setOpenModal] = useState<boolean>(false);
   const validateMessage = (chars: number) => `Min ${chars} caraster`;
 
@@ -59,7 +61,8 @@ export const AuthModal: React.FC<Props> = ({ className }) => {
   });
 
   const onSubmit = async (values: TRegForm) => {
-    // setOpenModal(false);
+    const { confirmPassword, ...data } = values;
+    regNewUser(data);
     form.reset();
   };
 
@@ -130,7 +133,7 @@ export const AuthModal: React.FC<Props> = ({ className }) => {
                       <FormItem className="relative">
                         <FormControl>
                           <Input
-                            placeholder="password"
+                            placeholder="Password"
                             type="password"
                             {...field}
                           />
