@@ -36,12 +36,10 @@ export const authConfig: AuthOptions = {
         }
 
         // TODO: хэшировать пароль перед отравкой, при регистрации
-        // const isPasswordValid = await compare(
-        //   credentials.password,
-        //   foundUser.password,
-        // );
-
-        const isPasswordValid = credentials.password === foundUser.password;
+        const isPasswordValid = await compare(
+          credentials.password,
+          foundUser.password,
+        );
 
         if (!isPasswordValid) {
           return null;

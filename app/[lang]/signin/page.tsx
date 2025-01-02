@@ -10,7 +10,6 @@ export default async function Singnin() {
     'use server';
     try {
       await addNewUser(data);
-      console.log('success!!!');
     } catch (e) {
       console.log(e, 'Не удоалось добавить нового пользователя');
     }
