@@ -11,6 +11,7 @@ import {
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { Loader } from 'lucide-react';
 
 import {
   Form,
@@ -20,7 +21,6 @@ import {
   FormMessage,
 } from '@/app/components/ui/form';
 import { Button, Input } from '../../ui';
-import { User } from '@prisma/client';
 
 interface Props {
   className?: string;
@@ -28,19 +28,19 @@ interface Props {
 }
 
 export const AuthModal: React.FC<Props> = ({ className, regNewUser }) => {
-  const [openModal, setOpenModal] = useState<boolean>(false);
-  const validateMessage = (chars: number) => `Min ${chars} caraster`;
+  const [open, setOpen] = useState<boolean>(false);
+  const [isSending, setIsSending] = useState<boolean>(false);
+  const validateMessage = (chars: number): string => `Min ${chars} caraster`;
 
   const regSchema = z
     .object({
-      name: z.string().min(2, { message: validateMessage(2) }),
       fullName: z.string().min(2, { message: validateMessage(2) }),
       email: z
         .string()
         .min(6, { message: validateMessage(6) })
         .email({ message: 'Invalid email' }),
       password: z.string().min(6, { message: validateMessage(6) }),
-      confirmPassword: z.string().min(6, { message: validateMessage(6) }),
+      confirmPassword: z.string(),
     })
     .refine((data) => data.password === data.confirmPassword, {
       message: 'Пароли должны совпадать',
@@ -52,7 +52,6 @@ export const AuthModal: React.FC<Props> = ({ className, regNewUser }) => {
   const form = useForm<TRegForm>({
     resolver: zodResolver(regSchema),
     defaultValues: {
-      name: '',
       fullName: '',
       email: '',
       password: '',
@@ -61,18 +60,24 @@ export const AuthModal: React.FC<Props> = ({ className, regNewUser }) => {
   });
 
   const onSubmit = async (values: TRegForm) => {
+    setIsSending(true);
     const { confirmPassword, ...data } = values;
-    regNewUser(data);
+    try {
+      await regNewUser(data);
+    } catch (e) {
+      console.log('[AuthModal] Ничего не получилось!');
+    } finally {
+      setIsSending(false);
+    }
+
+    setOpen(false);
     form.reset();
   };
 
   return (
     <div className={className}>
-      <Dialog /*open={openModal}>*/>
-        <DialogTrigger
-          // onClick={() => setOpenModal(true)}
-          className="w-full bg-dark-green text-white hover:opacity-95 uppercase dark:bg-light-yellow dark:text-dark-green inline-flex items-center justify-center whitespace-nowrap rounded-md text-lg font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 min-h-14"
-        >
+      <Dialog open={open} onOpenChange={() => setOpen((open) => !open)}>
+        <DialogTrigger className="w-full bg-dark-green text-white hover:opacity-95 uppercase dark:bg-light-yellow dark:text-dark-green inline-flex items-center justify-center whitespace-nowrap rounded-md text-lg font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 min-h-14">
           Sign UP
         </DialogTrigger>
         <DialogContent className="bg-white dark:bg-black">
@@ -86,18 +91,6 @@ export const AuthModal: React.FC<Props> = ({ className, regNewUser }) => {
                   onSubmit={form.handleSubmit(onSubmit)}
                   className="flex flex-col gap-9 mb-9"
                 >
-                  <FormField
-                    control={form.control}
-                    name="name"
-                    render={({ field }) => (
-                      <FormItem className="relative">
-                        <FormControl>
-                          <Input placeholder="Name" type="text" {...field} />
-                        </FormControl>
-                        <FormMessage className="absolute left-1 text-left text-sm" />
-                      </FormItem>
-                    )}
-                  />
                   <FormField
                     control={form.control}
                     name="fullName"
@@ -151,6 +144,7 @@ export const AuthModal: React.FC<Props> = ({ className, regNewUser }) => {
                           <Input
                             placeholder="Confirm password"
                             type="password"
+                            onPaste={(e) => e.preventDefault()}
                             {...field}
                           />
                         </FormControl>
@@ -159,9 +153,11 @@ export const AuthModal: React.FC<Props> = ({ className, regNewUser }) => {
                     )}
                   />
                   <Button type="submit">
-                    {form.formState.isSubmitting
-                      ? 'Registered...'
-                      : 'Registration'}
+                    {isSending ? (
+                      <Loader className="animate-spin" />
+                    ) : (
+                      'Registration'
+                    )}
                   </Button>
                 </form>
               </Form>

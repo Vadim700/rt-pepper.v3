@@ -14,6 +14,7 @@ export default async function Singnin() {
       console.log(e, 'Не удоалось добавить нового пользователя');
     }
   };
+
   return (
     <main className="bg-bg dark:bg-bg-dark dark:text-light-yellow grid place-content-center text-center">
       <h1 className="text-4xl mb-8">Sign In with</h1>

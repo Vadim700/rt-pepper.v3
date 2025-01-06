@@ -35,7 +35,6 @@ export const authConfig: AuthOptions = {
           return null;
         }
 
-        // TODO: хэшировать пароль перед отравкой, при регистрации
         const isPasswordValid = await compare(
           credentials.password,
           foundUser.password,
@@ -78,6 +77,8 @@ export const authConfig: AuthOptions = {
     session({ session, token }) {
       if (session.user) {
         session.user.email = token.email;
+        session.user.name = token.name;
+        session.user.fullName = token.fullName; // TODO: типизировать
       }
 
       return session;
