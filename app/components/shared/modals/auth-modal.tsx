@@ -34,7 +34,7 @@ export const AuthModal: React.FC<Props> = ({ className, regNewUser }) => {
 
   const regSchema = z
     .object({
-      fullName: z.string().min(2, { message: validateMessage(2) }),
+      name: z.string().min(2, { message: validateMessage(2) }),
       email: z
         .string()
         .min(6, { message: validateMessage(6) })
@@ -52,7 +52,7 @@ export const AuthModal: React.FC<Props> = ({ className, regNewUser }) => {
   const form = useForm<TRegForm>({
     resolver: zodResolver(regSchema),
     defaultValues: {
-      fullName: '',
+      name: '',
       email: '',
       password: '',
       confirmPassword: '',
@@ -93,15 +93,11 @@ export const AuthModal: React.FC<Props> = ({ className, regNewUser }) => {
                 >
                   <FormField
                     control={form.control}
-                    name="fullName"
+                    name="name"
                     render={({ field }) => (
                       <FormItem className="relative">
                         <FormControl>
-                          <Input
-                            placeholder="Full name"
-                            type="text"
-                            {...field}
-                          />
+                          <Input placeholder="Name" type="text" {...field} />
                         </FormControl>
                         <FormMessage className="absolute left-1 text-left text-sm" />
                       </FormItem>

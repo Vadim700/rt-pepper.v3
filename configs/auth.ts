@@ -1,9 +1,10 @@
 import type { AuthOptions, User } from 'next-auth';
+
 import GoggleProvider from 'next-auth/providers/google';
 import GitHubProvider from 'next-auth/providers/github';
 import Credentials from 'next-auth/providers/credentials';
 import { prisma } from '@/prisma/prisma-client';
-import { compare } from 'bcrypt';
+import { compare, hashSync } from 'bcrypt';
 
 export const authConfig: AuthOptions = {
   providers: [
@@ -14,6 +15,14 @@ export const authConfig: AuthOptions = {
     GitHubProvider({
       clientId: process.env.GITHUB_ID || '',
       clientSecret: process.env.GITHUB_SECRET || '',
+      profile(profile) {
+        return {
+          id: profile.id,
+          name: profile.name || profile.email,
+          email: profile.email,
+          image: profile.image,
+        };
+      },
     }),
     Credentials({
       credentials: {
@@ -48,7 +57,6 @@ export const authConfig: AuthOptions = {
           id: String(foundUser.id),
           email: foundUser.email,
           name: foundUser.name,
-          fullName: foundUser.fullName,
         };
       },
     }),
@@ -58,6 +66,58 @@ export const authConfig: AuthOptions = {
     strategy: 'jwt',
   },
   callbacks: {
+    async signIn({ user, account }) {
+      try {
+        if (account?.provider === 'credentials') {
+          return true;
+        }
+
+        if (!user.email) {
+          return false;
+        }
+
+        const findUser = await prisma.user.findFirst({
+          where: {
+            OR: [
+              {
+                provider: account?.provider,
+                providerId: account?.providerAccountId,
+              },
+              { email: user.email },
+            ],
+          },
+        });
+
+        if (findUser) {
+          await prisma.user.update({
+            where: {
+              id: findUser.id,
+            },
+            data: {
+              provider: account?.provider,
+              providerId: account?.providerAccountId,
+            },
+          });
+
+          return true;
+        }
+
+        await prisma.user.create({
+          data: {
+            email: user.email,
+            name: user.name || 'User#' + user.id,
+            password: hashSync(user.id.toString(), 10),
+            provider: account?.provider,
+            providerId: account?.providerAccountId,
+          },
+        });
+
+        return true;
+      } catch (e) {
+        console.log('Error [SIGNIN]');
+        return false;
+      }
+    },
     async jwt({ token }) {
       const findUser = await prisma.user.findFirst({
         where: {
@@ -69,7 +129,6 @@ export const authConfig: AuthOptions = {
         token.id = String(findUser.id);
         token.email = findUser.email;
         token.name = findUser.name;
-        token.fullName = findUser.fullName;
       }
 
       return token;
@@ -78,7 +137,6 @@ export const authConfig: AuthOptions = {
       if (session.user) {
         session.user.email = token.email;
         session.user.name = token.name;
-        session.user.fullName = token.fullName; // TODO: типизировать
       }
 
       return session;

@@ -2,7 +2,7 @@ import { hashSync } from 'bcrypt';
 
 export const addNewUser = async (data: any) => {
   const hashData = {
-    fullName: data.fullName,
+    name: data.name,
     email: data.email,
     password: hashSync(data.password, 10),
   };
