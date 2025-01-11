@@ -13,6 +13,8 @@ model Post {
 
   title  String
   body   String
+  autor  String
+  avatar String
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -45,12 +47,17 @@ model User {
   id Int @id @default(autoincrement())
 
   name     String
-  userName String
+  fullName String?
   email    String  @unique
-  phone    String?
-  website  String?
-  address  String?
-  company  String?
+  password String
+
+  provider   String?
+  providerId String?
+
+  phone   String?
+  website String?
+  address String?
+  company String?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

@@ -6,7 +6,6 @@ import { MyIcon } from '../myIcon/MyIcon';
 import { usePageTopicStore } from '@/store/topic';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
-import styles from './style.module.scss';
 
 type Prop = {
   lang: string;
@@ -46,7 +45,7 @@ export const Registration = ({ lang, dict }: Prop) => {
       {session?.data ? (
         <Link
           href={'#'}
-          onClick={() => signOut({ callbackUrl: '/' + lang })}
+          onClick={() => signOut({ callbackUrl: '/' + lang + '/signin' })}
           className="flex items-center gap-6"
         >
           <MyIcon name={'logout'} size={40} />

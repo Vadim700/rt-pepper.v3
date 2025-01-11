@@ -16,10 +16,12 @@ import {
   FormMessage,
 } from '@/app/components/ui/form';
 import React from 'react';
+import { Loader } from 'lucide-react';
 
 export default function SignInForm() {
   const router = useRouter();
   const [validAuth, setValidAuth] = React.useState<boolean | undefined>(false);
+  const [isLoading, setIsLoading] = React.useState<boolean>(false);
 
   const formSchema = z.object({
     email: z.string().email({ message: 'Invalid email' }),
@@ -35,16 +37,23 @@ export default function SignInForm() {
   });
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    const res = await signIn('credentials', {
-      email: values.email,
-      password: values.password,
-      redirect: false,
-    });
+    setIsLoading(true);
+    try {
+      const res = await signIn('credentials', {
+        email: values.email,
+        password: values.password,
+        redirect: false,
+      });
 
-    if (res && res.ok) {
-      router.push('/profile'); // перенаправить на /profile
-    } else {
-      setValidAuth(true);
+      if (res && res.ok) {
+        router.push('/profile');
+      } else {
+        setValidAuth(true);
+      }
+    } catch (e) {
+      console.log(e, '[SignInForm] Не получилось авторизоваться');
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -53,7 +62,7 @@ export default function SignInForm() {
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
-          className="flex flex-col gap-9"
+          className="flex flex-col gap-9 mb-9"
         >
           <FormField
             control={form.control}
@@ -63,7 +72,7 @@ export default function SignInForm() {
                 <FormControl>
                   <Input placeholder="email" type="email" {...field} />
                 </FormControl>
-                <FormMessage className="absolute bottom-[-25px] left-1 text-left text-sm" />
+                <FormMessage className="absolute left-1 text-left text-sm" />
               </FormItem>
             )}
           />
@@ -75,16 +84,18 @@ export default function SignInForm() {
                 <FormControl>
                   <Input placeholder="password" type="password" {...field} />
                 </FormControl>
-                <FormMessage className="absolute bottom-[-25px] left-1 text-left text-sm" />
+                <FormMessage className="absolute left-1 text-left text-sm" />
               </FormItem>
             )}
           />
-          <Button type="submit">Sign In</Button>
+          <Button type="submit">
+            {isLoading ? <Loader className="animate-spin" /> : 'Sing In'}
+          </Button>
         </form>
         {validAuth && (
-          <p className="absolute bottom-[-30px] left-0 text-red-500">
+          <div className="absolute bottom-[10px] left-0 text-red-500">
             Opps!.. unauthorized
-          </p>
+          </div>
         )}
       </Form>
     </div>

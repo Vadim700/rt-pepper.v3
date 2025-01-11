@@ -1,10 +1,17 @@
 import { authConfig } from '@/configs/auth';
+import { prisma } from '@/prisma/prisma-client';
 import { getServerSession } from 'next-auth';
 import Image from 'next/image';
 import Link from 'next/link';
 
 const Profile = async () => {
   const session = await getServerSession(authConfig);
+
+  const findUser = await prisma.user.findFirst({
+    where: {
+      email: session?.user?.email || '',
+    },
+  });
 
   return (
     <main className="bg-bg dark:bg-bg-dark flex flex-col justify-center items-center">
@@ -16,6 +23,7 @@ const Profile = async () => {
       </h1>
       {session?.user?.image && (
         <Image
+          priority
           src={session.user.image}
           width={150}
           height={150}

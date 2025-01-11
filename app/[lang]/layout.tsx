@@ -4,6 +4,7 @@ import { Providers } from '@/app/components/providers/Providers';
 import Aside from '@/app/components/shared/aside/component';
 import '../../styles/globals.css';
 import { getDictionary } from '../dictionaries';
+import NextTopLoader from 'nextjs-toploader';
 
 export const metadata: Metadata = {
   title: 'RT Pepper',
@@ -28,6 +29,7 @@ export default async function RootLayout({
   return (
     <html lang={lang} suppressHydrationWarning={true}>
       <body className="grid grid-cols-[1fr_4fr] grid-rows-[auto_1fr] h-screen">
+      {/* <NextTopLoader color='#BC6C25'/> */}
         <Providers>
           <Aside lang={lang} dict={dict} />
           <Header lang={lang} dict={dict} />
