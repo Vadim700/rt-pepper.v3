@@ -1,11 +1,13 @@
+import { EditProfileForm } from '@/app/components/shared/editProfileForm/component';
+import { getDictionary } from '@/app/dictionaries';
 import { authConfig } from '@/configs/auth';
 import { prisma } from '@/prisma/prisma-client';
 import { getServerSession } from 'next-auth';
-import Image from 'next/image';
-import Link from 'next/link';
 
-const Profile = async () => {
+const Profile = async ({ params }: any) => {
+  const { lang } = params;
   const session = await getServerSession(authConfig);
+  const dict = await getDictionary(lang);
 
   const findUser = await prisma.user.findFirst({
     where: {
@@ -13,32 +15,23 @@ const Profile = async () => {
     },
   });
 
+  const { password, ...userWithoutPassword } = findUser ?? {};
+  const editProfileAction = async (data: any) => {
+    'use server';
+
+    console.log(data, '>>> Profile');
+  };
+
   return (
     <main className="bg-bg dark:bg-bg-dark flex flex-col justify-center items-center">
       <h1 className="mb-12 text-3xl">
-        Profile of{' '}
-        <span className="text-ginger dark:text-light-green">
-          {session?.user?.name}
-        </span>
+        Profile of <span className="text-ginger">{session?.user?.name}</span>
       </h1>
-      {session?.user?.image && (
-        <Image
-          priority
-          src={session.user.image}
-          width={150}
-          height={150}
-          alt="Avatar"
-          className="rounded-full mb-4 "
-        />
-      )}
-      {session?.user?.email && (
-        <Link
-          href={`mailto:${session.user.email}`}
-          className="text-lg text-dark-green dark:text-light-yellow"
-        >
-          {session.user.email}
-        </Link>
-      )}
+      <EditProfileForm
+        className={''}
+        editProfile={editProfileAction}
+        userData={userWithoutPassword}
+      />
     </main>
   );
 };
