@@ -16,6 +16,7 @@ const Profile = async ({ params }: any) => {
   });
 
   const { password, ...userWithoutPassword } = findUser ?? {};
+
   const editProfileAction = async (data: any) => {
     'use server';
 

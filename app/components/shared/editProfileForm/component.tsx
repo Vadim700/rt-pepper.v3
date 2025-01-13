@@ -15,6 +15,7 @@ import {
 } from '@/app/components/ui/form';
 import { Button, Input } from '../../ui';
 import type { User } from '@prisma/client';
+import { cn } from '@/lib/utils';
 
 type UserWithoutPassword = Omit<User, 'password'> | {};
 
@@ -37,7 +38,17 @@ export const EditProfileForm: React.FC<Props> = ({
     fullName: z.string().min(2, { message: validateMessage(2) }),
     phone: z.string().min(2, { message: validateMessage(2) }),
     adress: z.string().min(2, { message: validateMessage(2) }),
-    image: z.string(),
+    files: z
+      .instanceof(File)
+      .refine((file) => file.size <= 5 * 1024 * 1024, {
+        message: 'Файл должен быть не более 5 Mb',
+      })
+      .refine(
+        (file) => ['image/png', 'image/jpeg', 'image/jpg'].includes(file.type),
+        {
+          message: 'Only PNG, JPG, and JPEG files are allowed',
+        },
+      ),
   });
 
   type TRegForm = z.infer<typeof regSchema>;
@@ -54,30 +65,45 @@ export const EditProfileForm: React.FC<Props> = ({
 
   const onSubmit = async (values: TRegForm) => {
     setIsSending(true);
+    console.log(values);
+    const file = form.getValues('files') as File;
     try {
-      await editProfile(values);
+      await editProfile({
+        ...JSON.parse(
+          JSON.stringify({
+            ...values,
+            image: file ? file.name : null,
+          }),
+        ),
+      });
     } catch (e) {
-      console.log('[AuthModal] Ничего не получилось!');
+      console.log(e, '[EditProfileForm] Не получилось отправить данные');
     } finally {
       setIsSending(false);
     }
-
     form.reset();
   };
+
   return (
-    <div className={className}>
+    <div className={cn(className, 'flex flex-col gap-7')}>
+      <span className="text-2xl">Личная информация</span>
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
-          className="grid gap-5 grid-rows-4 grid-cols-2"
+          className="grid gap-6 grid-rows-4 grid-cols-2"
         >
           <FormField
             control={form.control}
             name="name"
             render={({ field }) => (
               <FormItem className="relative">
-                <FormControl>
-                  <Input placeholder="Name" type="text" {...field} />
+                <FormControl className="space-y-0">
+                  <Input
+                    className=""
+                    placeholder="Name"
+                    type="text"
+                    {...field}
+                  />
                 </FormControl>
                 <FormMessage className="absolute left-1 text-left text-sm" />
               </FormItem>
@@ -107,18 +133,20 @@ export const EditProfileForm: React.FC<Props> = ({
               </FormItem>
             )}
           />
-          <div className="row-span-2">
+          <div className="row-span-2 self-start">
             <FormField
               control={form.control}
-              name="image"
+              name="files"
               render={({ field }) => (
                 <FormItem className="relative">
                   <FormControl>
                     <Input
-                      placeholder="Adress"
+                      placeholder="Image"
                       className="h-full block"
                       type="file"
-                      {...field}
+                      onChange={(e) =>
+                        field.onChange(e.target.files && e.target.files[0])
+                      }
                     />
                   </FormControl>
                   <FormMessage className="absolute left-1 text-left text-sm" />
@@ -138,8 +166,28 @@ export const EditProfileForm: React.FC<Props> = ({
               </FormItem>
             )}
           />
-          <Button type="submit" className="block col-span-2 w-60 justify-self-end">
-            {isSending ? <Loader className="animate-spin" /> : 'Registration'}
+          <Button
+            type="submit"
+            className="block col-span-2 w-60 justify-self-end"
+          >
+            {isSending ? <Loader /> : 'Update'}
+          </Button>
+        </form>
+      </Form>
+      <span className="text-2xl">Информация для входа в личный кабинет</span>
+      <div className="flex justify-between h-10 w-full rounded-md border border-dark-green px-3 py-2 text-lg ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text- focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 min-h-12 bg-white dark:text-black space-y-0">
+        {userData.email || 'email'} <button className="underline">Edit</button>
+      </div>
+      <div className="flex justify-between h-10 w-full rounded-md border border-dark-green px-3 py-2 text-lg ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text- focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 min-h-12 bg-white dark:text-black space-y-0">
+        XXXXXXXXX <button className="underline">Edit</button>
+      </div>
+      <Form {...form}>
+        <form onSubmit={(e) => e.preventDefault()} className="self-start">
+          <Button
+            type="submit"
+            className="w-60 justify-self-end bg-red-500 dark:bg-red-500 dark:text-white"
+          >
+            Delete profile
           </Button>
         </form>
       </Form>
