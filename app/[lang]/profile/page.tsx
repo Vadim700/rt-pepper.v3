@@ -2,7 +2,10 @@ import { EditProfileForm } from '@/app/components/shared/editProfileForm/compone
 import { getDictionary } from '@/app/dictionaries';
 import { authConfig } from '@/configs/auth';
 import { prisma } from '@/prisma/prisma-client';
+import { User } from '@prisma/client';
 import { getServerSession } from 'next-auth';
+
+type UserWithoutPassword = Omit<User, 'password'>;
 
 const Profile = async ({ params }: any) => {
   const { lang } = params;
@@ -15,16 +18,17 @@ const Profile = async ({ params }: any) => {
     },
   });
 
+  // const { password, ...userWithoutPassword } = findUser ?? {};
   const { password, ...userWithoutPassword } = findUser ?? {};
 
-  const editProfileAction = async (data: any) => {
+  async function editProfileAction(data: any) {
     'use server';
 
     console.log(data, '>>> Profile');
-  };
+  }
 
   return (
-    <main className="bg-bg dark:bg-bg-dark flex flex-col justify-center items-center">
+    <main className="bg-bg dark:bg-bg-dark flex flex-col justify-center items-center px-4">
       <h1 className="mb-12 text-3xl">
         Profile of <span className="text-ginger">{session?.user?.name}</span>
       </h1>

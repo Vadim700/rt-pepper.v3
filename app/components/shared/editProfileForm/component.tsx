@@ -1,10 +1,10 @@
 'use client';
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Loader } from 'lucide-react';
+import { Loader, UserRound, X } from 'lucide-react';
 
 import {
   Form,
@@ -13,11 +13,12 @@ import {
   FormItem,
   FormMessage,
 } from '@/app/components/ui/form';
-import { Button, Input } from '../../ui';
+import { Button, Input, Label } from '../../ui';
 import type { User } from '@prisma/client';
 import { cn } from '@/lib/utils';
+import Image from 'next/image';
 
-type UserWithoutPassword = Omit<User, 'password'> | {};
+type UserWithoutPassword = Omit<User, 'password'>;
 
 interface Props {
   className?: string;
@@ -31,6 +32,8 @@ export const EditProfileForm: React.FC<Props> = ({
   userData,
 }) => {
   const [isSending, setIsSending] = useState<boolean>(false);
+  const [selectedFile, setSelectedFile] = useState(null);
+  const imageRef = useRef(null);
   const validateMessage = (chars: number): string => `Min ${chars} caraster`;
 
   const regSchema = z.object({
@@ -56,12 +59,18 @@ export const EditProfileForm: React.FC<Props> = ({
   const form = useForm<TRegForm>({
     resolver: zodResolver(regSchema),
     defaultValues: {
-      name: (userData as Omit<User, 'password'>).name,
-      fullName: (userData as Omit<User, 'password'>).fullName || '',
-      phone: (userData as Omit<User, 'password'>).phone || '',
-      adress: (userData as Omit<User, 'password'>).address || '',
+      name: userData.name || '',
+      fullName: userData.fullName || '',
+      phone: userData.phone || '',
+      adress: userData.address || '',
     },
   });
+
+  const handleFileChange = (event: any) => {
+    if (event.target.files && event.target.files[0]) {
+      setSelectedFile(event.target.files[0]);
+    }
+  };
 
   const onSubmit = async (values: TRegForm) => {
     setIsSending(true);
@@ -97,6 +106,7 @@ export const EditProfileForm: React.FC<Props> = ({
             name="name"
             render={({ field }) => (
               <FormItem className="relative">
+                Full Name
                 <FormControl className="space-y-0">
                   <Input
                     className=""
@@ -114,6 +124,7 @@ export const EditProfileForm: React.FC<Props> = ({
             name="fullName"
             render={({ field }) => (
               <FormItem className="relative">
+                Name
                 <FormControl>
                   <Input placeholder="Full Name" type="text" {...field} />
                 </FormControl>
@@ -126,6 +137,7 @@ export const EditProfileForm: React.FC<Props> = ({
             name="phone"
             render={({ field }) => (
               <FormItem className="relative">
+                Phone Number
                 <FormControl>
                   <Input placeholder="Phone" type="text" {...field} />
                 </FormControl>
@@ -133,32 +145,61 @@ export const EditProfileForm: React.FC<Props> = ({
               </FormItem>
             )}
           />
-          <div className="row-span-2 self-start">
-            <FormField
-              control={form.control}
-              name="files"
-              render={({ field }) => (
-                <FormItem className="relative">
-                  <FormControl>
-                    <Input
-                      placeholder="Image"
-                      className="h-full block"
-                      type="file"
-                      onChange={(e) =>
-                        field.onChange(e.target.files && e.target.files[0])
-                      }
-                    />
-                  </FormControl>
-                  <FormMessage className="absolute left-1 text-left text-sm" />
-                </FormItem>
+          <div className="row-span-2 self-center flex border h-full items-start px-3 py-2 gap-4">
+            <div className="relative self-center">
+              {selectedFile && (
+                <span
+                  className="absolute top-[3px] right-[3px] cursor-pointer rounded-full bg-bg dark:bg-bg-dark hover:rotate-45 transition-all hover:text-red-500"
+                  onClick={() => setSelectedFile(null)}
+                >
+                  <X size={16} />
+                </span>
               )}
-            />
+              <Label
+                className=" w-24 aspect-square border rounded-full shrink-0 grid place-items-center overflow-hidden cursor-pointer"
+                htmlFor="fileInput"
+              >
+                {selectedFile ? (
+                  <Image
+                    src={URL.createObjectURL(selectedFile)}
+                    ref={imageRef}
+                    width={100}
+                    height={100}
+                    alt="Avatar"
+                    className="object-cover aspect-square"
+                  />
+                ) : (
+                  <UserRound size={55} className="text-ginger" />
+                )}
+              </Label>
+            </div>
+            <div className="self-center flex flex-col">
+              <FormField
+                control={form.control}
+                name="files"
+                render={({ field }) => (
+                  <FormItem className="relative">
+                    <FormControl className="">
+                      <Input
+                        placeholder="Image"
+                        className=""
+                        id="fileInput"
+                        type="file"
+                        onChange={handleFileChange}
+                      />
+                    </FormControl>
+                    <FormMessage className="absolute left-1 text-left text-sm" />
+                  </FormItem>
+                )}
+              />
+            </div>
           </div>
           <FormField
             control={form.control}
             name="adress"
             render={({ field }) => (
               <FormItem className="relative">
+                Adress
                 <FormControl>
                   <Input placeholder="Adress" type="text" {...field} />
                 </FormControl>
@@ -175,10 +216,10 @@ export const EditProfileForm: React.FC<Props> = ({
         </form>
       </Form>
       <span className="text-2xl">Информация для входа в личный кабинет</span>
-      <div className="flex justify-between h-10 w-full rounded-md border border-dark-green px-3 py-2 text-lg ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text- focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 min-h-12 bg-white dark:text-black space-y-0">
+      <div className="flex justify-between h-10 w-full border border-dark-green px-3 py-2 text-lg min-h-12 bg-white dark:text-black space-y-0">
         {userData.email || 'email'} <button className="underline">Edit</button>
       </div>
-      <div className="flex justify-between h-10 w-full rounded-md border border-dark-green px-3 py-2 text-lg ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text- focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 min-h-12 bg-white dark:text-black space-y-0">
+      <div className="flex justify-between h-10 w-full border border-dark-green px-3 py-2 text-lg min-h-12 bg-white dark:text-black space-y-0">
         XXXXXXXXX <button className="underline">Edit</button>
       </div>
       <Form {...form}>
