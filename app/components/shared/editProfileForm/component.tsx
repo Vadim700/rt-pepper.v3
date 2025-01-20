@@ -149,7 +149,7 @@ export const EditProfileForm: React.FC<Props> = ({
             <div className="relative self-center">
               {selectedFile && (
                 <span
-                  className="absolute top-[3px] right-[3px] cursor-pointer rounded-full bg-bg dark:bg-bg-dark hover:rotate-45 transition-all hover:text-red-500"
+                  className="absolute top-[3px] right-[3px] cursor-pointer rounded-full bg-bg dark:bg-bg-dark hover:rotate-90 transition-all hover:text-red-500"
                   onClick={() => setSelectedFile(null)}
                 >
                   <X size={16} />
