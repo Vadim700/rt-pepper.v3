@@ -2,10 +2,17 @@ import { EditProfileForm } from '@/app/components/shared/editProfileForm/compone
 import { getDictionary } from '@/app/dictionaries';
 import { authConfig } from '@/configs/auth';
 import { prisma } from '@/prisma/prisma-client';
+import { editUser } from '@/services/usersActions';
 import { User } from '@prisma/client';
 import { getServerSession } from 'next-auth';
 
 type UserWithoutPassword = Omit<User, 'password'>;
+type UserWithoutEmail = Omit<User, 'id'>;
+interface SliceData {
+  password: string;
+  id: string;
+  userWithoutPassword: UserWithoutPassword;
+}
 
 const Profile = async ({ params }: any) => {
   const { lang } = params;
@@ -18,13 +25,14 @@ const Profile = async ({ params }: any) => {
     },
   });
 
-  // const { password, ...userWithoutPassword } = findUser ?? {};
-  const { password, ...userWithoutPassword } = findUser ?? {};
+  const { password, id, ...userWithoutPassword }: SliceData & any =
+    findUser ?? {};
 
-  async function editProfileAction(data: any) {
+  async function editProfileAction(data: UserWithoutEmail) {
     'use server';
 
-    console.log(data, '>>> Profile');
+    const userData = { id, ...data };
+    await editUser(userData);
   }
 
   return (
