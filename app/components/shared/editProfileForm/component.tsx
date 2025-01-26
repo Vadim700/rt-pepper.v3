@@ -1,5 +1,5 @@
 'use client';
-import React, { useId, useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
@@ -17,21 +17,29 @@ import { Button, Input, Label } from '../../ui';
 import type { User } from '@prisma/client';
 import { cn } from '@/lib/utils';
 import Image from 'next/image';
+import { signOut } from 'next-auth/react';
+import { redirect } from 'next/dist/server/api-utils';
 
 type UserWithoutPassword = Omit<User, 'password'>;
 
 interface Props {
   className?: string;
   editProfile: (data: any) => Promise<void>;
+  deleteProfile: () => Promise<void>;
   userData: UserWithoutPassword;
+  lang: string;
 }
 
 export const EditProfileForm: React.FC<Props> = ({
   className,
   editProfile,
+  deleteProfile,
   userData,
+  lang,
 }) => {
   const [isSending, setIsSending] = useState<boolean>(false);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [successDelete, setSuccessDelete] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
   const [successUpdate, setSuccessUpdate] = useState(false);
   const imageRef = useRef(null);
@@ -76,7 +84,7 @@ export const EditProfileForm: React.FC<Props> = ({
     }
   };
 
-  const onSubmit = async (values: TRegForm) => {
+  const onSubmitMainInfo = async (values: TRegForm) => {
     setIsSending(true);
     setSuccessUpdate(false);
     // const file = form.getValues('files') as File;
@@ -101,12 +109,26 @@ export const EditProfileForm: React.FC<Props> = ({
     }
   };
 
+  const onClickDeleteProfile = async () => {
+    setIsDeleting(true);
+    setSuccessDelete(false);
+    try {
+      await deleteProfile();
+      setSuccessDelete(true);
+      signOut({ callbackUrl: '/' + lang + '/posts' });
+    } catch (e) {
+      console.log('[onClickDeleteProfile] Не получилось удалить профиль');
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
   return (
     <div className={cn(className, 'flex flex-col gap-7 max-w-[900px]')}>
       <span className="text-2xl">Личная информация</span>
       <Form {...form}>
         <form
-          onSubmit={form.handleSubmit(onSubmit)}
+          onSubmit={form.handleSubmit(onSubmitMainInfo)}
           className="grid gap-6 grid-rows-4 grid-cols-2"
         >
           <FormField
@@ -114,7 +136,7 @@ export const EditProfileForm: React.FC<Props> = ({
             name="name"
             render={({ field }) => (
               <FormItem className="relative">
-                Full Name
+                Name
                 <FormControl className="space-y-0">
                   <Input
                     className=""
@@ -133,7 +155,7 @@ export const EditProfileForm: React.FC<Props> = ({
             name="fullName"
             render={({ field }) => (
               <FormItem className="relative">
-                Name
+                Full Name
                 <FormControl>
                   <Input
                     placeholder="Full Name"
@@ -253,7 +275,7 @@ export const EditProfileForm: React.FC<Props> = ({
           />
           <div className="flex col-span-2 justify-self-end items-center gap-10">
             {successUpdate && (
-              <p className="text-2xl text-green-400 ">
+              <p className="text-2xl text-dark-green dark:text-green-400">
                 Личная информация успешно обновлена
               </p>
             )}
@@ -271,12 +293,16 @@ export const EditProfileForm: React.FC<Props> = ({
         XXXXXXXXX <button className="underline">Edit</button>
       </div>
       <Form {...form}>
-        <form onSubmit={(e) => e.preventDefault()} className="self-start">
+        <form onSubmit={onClickDeleteProfile} className="self-start">
           <Button
             type="submit"
             className="w-60 justify-self-end bg-red-500 dark:bg-red-500 dark:text-white"
           >
-            Delete profile
+            {isDeleting ? (
+              <Loader className="animate-spin" />
+            ) : (
+              'Delete profile'
+            )}
           </Button>
         </form>
       </Form>

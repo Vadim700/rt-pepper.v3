@@ -33,9 +33,34 @@ export async function PATCH(
 
     return NextResponse.json(user);
   } catch (error) {
-    console.log('[POST_PATCH] Server error', error);
+    console.log('[USER_PATCH] Server error', error);
     return NextResponse.json(
       { message: 'Не удальсь обновить пользователя ' },
+      { status: 500 },
+    );
+  }
+}
+
+export async function DELETE(
+  req: NextRequest,
+  { params }: { params: { id: number } },
+) {
+  try {
+    const user = await prisma.user.delete({
+      where: {
+        id: Number(params.id),
+      },
+    });
+
+    if (!user) {
+      console.log('Пользователь не нейден');
+    }
+
+    return NextResponse.json(user);
+  } catch (error) {
+    console.log('[USER_PATCH] Server error', error);
+    return NextResponse.json(
+      { message: 'Не удальсь удалить профиль' },
       { status: 500 },
     );
   }

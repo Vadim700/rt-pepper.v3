@@ -1,7 +1,7 @@
 import { User } from '@prisma/client';
 import { hashSync } from 'bcrypt';
 
-export const addNewUser = async (data: any) => {
+export const addNewUser = async (data: User) => {
   const hashData = {
     name: data.name,
     email: data.email,
@@ -39,5 +39,21 @@ export const editUser = async (data: User) => {
     return res.json();
   } catch (e) {
     console.log(e, '[editUser]');
+  }
+};
+
+export const deleteProfile = async (id: number) => {
+  try {
+    const res = await fetch(process.env.NEXTAUTH_URL + `/api/users/${id}`, {
+      method: 'DELETE',
+    });
+
+    if (!res.ok) {
+      throw new Error('[deleteProfile] Не получилось удалить профиль');
+    }
+
+    return res.json();
+  } catch (e) {
+    console.log(e, '[deleteProfile]');
   }
 };

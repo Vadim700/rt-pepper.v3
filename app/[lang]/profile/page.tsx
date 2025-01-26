@@ -2,7 +2,7 @@ import { EditProfileForm } from '@/app/components/shared/editProfileForm/compone
 import { getDictionary } from '@/app/dictionaries';
 import { authConfig } from '@/configs/auth';
 import { prisma } from '@/prisma/prisma-client';
-import { editUser } from '@/services/usersActions';
+import { deleteProfile, editUser } from '@/services/usersActions';
 import { User } from '@prisma/client';
 import { getServerSession } from 'next-auth';
 
@@ -35,6 +35,11 @@ const Profile = async ({ params }: any) => {
     await editUser(userData);
   }
 
+  async function deleteProfileAction() {
+    'use server';
+    await deleteProfile(id);
+  }
+
   return (
     <main className="bg-bg dark:bg-bg-dark flex flex-col justify-center items-center px-4">
       <h1 className="mb-12 text-3xl">
@@ -43,7 +48,9 @@ const Profile = async ({ params }: any) => {
       <EditProfileForm
         className={''}
         editProfile={editProfileAction}
+        deleteProfile={deleteProfileAction}
         userData={userWithoutPassword}
+        lang={lang}
       />
     </main>
   );
