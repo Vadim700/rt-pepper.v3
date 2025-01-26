@@ -19,7 +19,7 @@ import type { User } from '@prisma/client';
 import { cn } from '@/lib/utils';
 import Image from 'next/image';
 import { signOut } from 'next-auth/react';
-import { redirect } from 'next/dist/server/api-utils';
+import { useRouter } from 'next/navigation';
 
 type UserWithoutPassword = Omit<User, 'password'>;
 
@@ -44,6 +44,8 @@ export const EditProfileForm: React.FC<Props> = ({
   const [selectedFile, setSelectedFile] = useState(null);
   const [successUpdate, setSuccessUpdate] = useState(false);
   const imageRef = useRef(null);
+  const router = useRouter();
+
   const validateMessage = (chars: number): string => `Min ${chars} caraster`;
 
   const regSchema = z.object({
@@ -113,7 +115,7 @@ export const EditProfileForm: React.FC<Props> = ({
     try {
       await deleteProfile();
       setSuccessDelete(true);
-      signOut({ callbackUrl: '/' + lang + '/posts' });
+      document.getElementById('singOut')?.click();
     } catch (e) {
       console.log('[onClickDeleteProfile] Не получилось удалить профиль');
     } finally {
@@ -297,7 +299,9 @@ export const EditProfileForm: React.FC<Props> = ({
           <Button
             type="submit"
             className="w-60 justify-self-end bg-red-500 dark:bg-red-500 dark:text-white"
+            onClick={() => signOut()}
           >
+            ƒ
             {isDeleting ? (
               <Loader className="animate-spin" />
             ) : (
