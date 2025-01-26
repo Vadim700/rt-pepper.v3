@@ -5,6 +5,7 @@ import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Loader, UserRound, X } from 'lucide-react';
+import InputMask from 'react-input-mask';
 
 import {
   Form,
@@ -49,12 +50,7 @@ export const EditProfileForm: React.FC<Props> = ({
     name: z.string().min(2, { message: validateMessage(2) }),
     fullName: z.string().min(2, { message: validateMessage(2) }),
     address: z.string().min(2, { message: validateMessage(2) }),
-    phone: z
-      .string()
-      .min(2, { message: validateMessage(2) })
-      .regex(/^(\+|\d+|\s)*$/, {
-        message: 'only numbers',
-      }), // только цыфры
+    phone: z.string().min(2, { message: validateMessage(2) }),
     // files: z
     //   .instanceof(File)
     //   .refine((file) => file.size <= 5 * 1024 * 1024, {
@@ -177,11 +173,13 @@ export const EditProfileForm: React.FC<Props> = ({
               <FormItem className="relative">
                 Phone Number
                 <FormControl>
-                  <Input
-                    placeholder="Phone"
+                  <InputMask
+                    {...field}
+                    mask="+7 (999) 999-99-99"
+                    className="flex h-10 w-full rounded-md border border-dark-green px-3 py-2 text-lg ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text- focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 min-h-12 bg-white dark:text-black space-y-0"
+                    placeholder="+7 (___) ___-____"
                     type="text"
                     tabIndex={3}
-                    {...field}
                   />
                 </FormControl>
                 <FormMessage className="absolute left-1 text-left text-sm" />
