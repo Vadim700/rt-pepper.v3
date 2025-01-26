@@ -52,7 +52,9 @@ export const EditProfileForm: React.FC<Props> = ({
     phone: z
       .string()
       .min(2, { message: validateMessage(2) })
-      .regex(/^\d+$/, { message: 'only numbers' }), // только цыфры
+      .regex(/^(\+|\d+|\s)*$/, {
+        message: 'only numbers',
+      }), // только цыфры
     // files: z
     //   .instanceof(File)
     //   .refine((file) => file.size <= 5 * 1024 * 1024, {
