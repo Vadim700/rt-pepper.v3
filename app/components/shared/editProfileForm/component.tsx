@@ -20,6 +20,8 @@ import { cn } from '@/lib/utils';
 import Image from 'next/image';
 import { signOut } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
+import { EditEmailModal } from '../modals/EditEmailModal';
+import { EditPasswordModal } from '../modals/EditPasswordModal';
 
 type UserWithoutPassword = Omit<User, 'password'>;
 
@@ -289,10 +291,10 @@ export const EditProfileForm: React.FC<Props> = ({
       </Form>
       <span className="text-2xl">Информация для входа в личный кабинет</span>
       <div className="flex justify-between h-10 w-full border border-dark-green px-3 py-2 text-lg min-h-12 bg-white dark:text-black space-y-0">
-        {userData.email || 'email'} <button className="underline">Edit</button>
+        {userData.email || 'email'} <EditEmailModal className={className} />
       </div>
       <div className="flex justify-between h-10 w-full border border-dark-green px-3 py-2 text-lg min-h-12 bg-white dark:text-black space-y-0">
-        XXXXXXXXX <button className="underline">Edit</button>
+        XXXXXXXXX <EditPasswordModal className={className} />
       </div>
       <Form {...form}>
         <form onSubmit={onClickDeleteProfile} className="self-start">
@@ -301,7 +303,6 @@ export const EditProfileForm: React.FC<Props> = ({
             className="w-60 justify-self-end bg-red-500 dark:bg-red-500 dark:text-white"
             onClick={() => signOut()}
           >
-            ƒ
             {isDeleting ? (
               <Loader className="animate-spin" />
             ) : (
