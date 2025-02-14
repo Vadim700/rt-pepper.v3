@@ -23,16 +23,18 @@ import {
   FormMessage,
 } from '@/app/components/ui/form';
 import { Button, Input } from '../../ui';
-import { editUser } from '@/services/usersActions';
+import { signOut, useSession } from 'next-auth/react';
 
 interface Props {
   className?: string;
+  editEmail: (email: string) => void;
 }
 
-export const EditEmailModal: React.FC<Props> = ({ className }) => {
+export const EditEmailModal: React.FC<Props> = ({ className, editEmail }) => {
   const [open, setOpen] = useState<boolean>(false);
   const [isSending, setIsSending] = useState<boolean>(false);
   const validateMessage = (chars: number): string => `Min ${chars} caraster`;
+  const { data: session, update } = useSession();
 
   const editEmailSchema = z
     .object({
@@ -44,12 +46,12 @@ export const EditEmailModal: React.FC<Props> = ({ className }) => {
     })
     .refine((data) => data.email === data.confirmEmail, {
       message: 'Пароли должны совпадать',
-      path: ['confirmPassword'],
+      path: ['confirmEmail'],
     });
 
-  type TRegForm = z.infer<typeof editEmailSchema>;
+  type TChangeEmailForm = z.infer<typeof editEmailSchema>;
 
-  const form = useForm<TRegForm>({
+  const form = useForm<TChangeEmailForm>({
     resolver: zodResolver(editEmailSchema),
     defaultValues: {
       email: '',
@@ -57,10 +59,14 @@ export const EditEmailModal: React.FC<Props> = ({ className }) => {
     },
   });
 
-  const onSubmit = async (values: any) => {
+  const onSubmit = async ({ email }: { email: string }) => {
     setIsSending(true);
     try {
-      // await editUser(values);
+      await editEmail(email);
+
+      signOut({
+        callbackUrl: '/signin',
+      });
     } catch (e) {
       console.log('[AuthModal] Ничего не получилось!');
     } finally {
@@ -79,51 +85,52 @@ export const EditEmailModal: React.FC<Props> = ({ className }) => {
         </DialogTrigger>
         <DialogContent className="bg-white dark:bg-black">
           <DialogHeader>
-            <DialogTitle className="text-4xl text-center mb-8">
+            <DialogTitle className="text-4xl text-center mb-4">
               Update your email
             </DialogTitle>
-            <DialogDescription>
-              <Form {...form}>
-                <form
-                  onSubmit={form.handleSubmit(onSubmit)}
-                  className="flex flex-col gap-9 mb-9"
-                >
-                  <FormField
-                    control={form.control}
-                    name="email"
-                    render={({ field }) => (
-                      <FormItem className="relative">
-                        <FormControl>
-                          <Input placeholder="New e-mail" type="email" {...field} />
-                        </FormControl>
-                        <FormMessage className="absolute left-1 text-left text-sm" />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={form.control}
-                    name="confirmEmail"
-                    render={({ field }) => (
-                      <FormItem className="relative">
-                        <FormControl>
-                          <Input
-                            placeholder="Confirm e-mail"
-                            type="text"
-                            onPaste={(e) => e.preventDefault()}
-                            {...field}
-                          />
-                        </FormControl>
-                        <FormMessage className="absolute left-1 text-left text-sm" />
-                      </FormItem>
-                    )}
-                  />
-                  <Button type="submit">
-                    {isSending ? <Loader className="animate-spin" /> : 'Update'}
-                  </Button>
-                </form>
-              </Form>
+            <DialogDescription className='text-base mb-4'>
+              After changing the email address, you need to log in again.
             </DialogDescription>
           </DialogHeader>
+          <Form {...form}>
+            <form
+              onSubmit={form.handleSubmit(onSubmit)}
+              className="flex flex-col gap-9 mb-9"
+            >
+              <FormField
+                control={form.control}
+                name="email"
+                render={({ field }) => (
+                  <FormItem className="relative">
+                    <FormControl>
+                      <Input placeholder="New e-mail" type="email" {...field} />
+                    </FormControl>
+                    <FormMessage className="absolute left-1 text-left text-sm" />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="confirmEmail"
+                render={({ field }) => (
+                  <FormItem className="relative">
+                    <FormControl>
+                      <Input
+                        placeholder="Confirm e-mail"
+                        type="text"
+                        onPaste={(e) => e.preventDefault()}
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage className="absolute left-1 text-left text-sm" />
+                  </FormItem>
+                )}
+              />
+              <Button type="submit">
+                {isSending ? <Loader className="animate-spin" /> : 'Update'}
+              </Button>
+            </form>
+          </Form>
         </DialogContent>
       </Dialog>
     </div>

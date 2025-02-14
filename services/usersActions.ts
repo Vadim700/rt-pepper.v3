@@ -57,3 +57,26 @@ export const deleteProfile = async (id: number) => {
     console.log(e, '[deleteProfile]');
   }
 };
+
+export const editUserEmail = async (data: { id: any; email: string }) => {
+  const { id, email } = data;
+  console.log(id, email, '[editUserEmail]');
+  try {
+    const response = await fetch(
+      process.env.NEXTAUTH_URL + `/api/users/${id}`,
+      {
+        method: 'PATCH',
+        body: JSON.stringify({
+          email,
+        }),
+      },
+    );
+    if (!response.ok) {
+      throw new Error('Не удалось сделать запрос на измененеи эл. почты');
+    }
+    const data = await response.json();
+    return data;
+  } catch (e) {
+    console.error(`[editEmail] Не получилось изменить эл. почту: ${e}`);
+  }
+};

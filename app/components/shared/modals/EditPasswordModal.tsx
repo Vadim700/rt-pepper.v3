@@ -1,5 +1,5 @@
 'use client';
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import {
   Dialog,
   DialogContent,
@@ -11,7 +11,7 @@ import {
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Loader } from 'lucide-react';
+import { Eye, EyeOff, Loader } from 'lucide-react';
 
 import { cn } from '@/lib/utils';
 
@@ -32,6 +32,8 @@ interface Props {
 export const EditPasswordModal: React.FC<Props> = ({ className }) => {
   const [open, setOpen] = useState<boolean>(false);
   const [isSending, setIsSending] = useState<boolean>(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [passwordValue, setPasswordValue] = useState('');
   const validateMessage = (chars: number): string => `Min ${chars} caraster`;
 
   const editEmailSchema = z
@@ -73,6 +75,10 @@ export const EditPasswordModal: React.FC<Props> = ({ className }) => {
     form.reset();
   };
 
+  const handlerEyeClick = () => {
+    setShowPassword((show) => !show);
+  };
+
   return (
     <div className={cn(className, '')}>
       <Dialog open={open} onOpenChange={() => setOpen((open) => !open)}>
@@ -84,68 +90,78 @@ export const EditPasswordModal: React.FC<Props> = ({ className }) => {
             <DialogTitle className="text-4xl text-center mb-8">
               Update your password
             </DialogTitle>
-            <DialogDescription>
-              <Form {...form}>
-                <form
-                  onSubmit={form.handleSubmit(onSubmit)}
-                  className="flex flex-col gap-9 mb-9"
-                >
-                  <FormField
-                    control={form.control}
-                    name="currentPassword"
-                    render={({ field }) => (
-                      <FormItem className="relative">
-                        <FormControl>
-                          <Input
-                            placeholder="Current password"
-                            type="text"
-                            {...field}
-                          />
-                        </FormControl>
-                        <FormMessage className="absolute left-1 text-left text-sm" />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={form.control}
-                    name="password"
-                    render={({ field }) => (
-                      <FormItem className="relative">
-                        <FormControl>
-                          <Input
-                            placeholder="New password"
-                            type="text"
-                            {...field}
-                          />
-                        </FormControl>
-                        <FormMessage className="absolute left-1 text-left text-sm" />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={form.control}
-                    name="confirmPassword"
-                    render={({ field }) => (
-                      <FormItem className="relative">
-                        <FormControl>
-                          <Input
-                            placeholder="Confirm new password"
-                            type="text"
-                            onPaste={(e) => e.preventDefault()}
-                            {...field}
-                          />
-                        </FormControl>
-                        <FormMessage className="absolute left-1 text-left text-sm" />
-                      </FormItem>
-                    )}
-                  />
-                  <Button type="submit">
-                    {isSending ? <Loader className="animate-spin" /> : 'Update'}
-                  </Button>
-                </form>
-              </Form>
-            </DialogDescription>
+            <DialogDescription></DialogDescription>
           </DialogHeader>
+          <Form {...form}>
+            <form
+              onSubmit={form.handleSubmit(onSubmit)}
+              className="flex flex-col gap-9 mb-9"
+            >
+              <FormField
+                control={form.control}
+                name="currentPassword"
+                render={({ field }) => (
+                  <FormItem className="relative">
+                    <FormControl>
+                      <Input
+                        placeholder="Current password"
+                        type={!showPassword ? 'password' : 'text'}
+                        {...field}
+                        onChange={(e) => setPasswordValue(e.target.value)}
+                        value={passwordValue}
+                      />
+                    </FormControl>
+                    <FormMessage className="absolute left-1 text-left text-sm" />
+                    {passwordValue.length > 0 && (
+                      <button
+                        type="button"
+                        className="absolute right-4 top-[50%] translate-y-[-50%] text-black !mt-0"
+                        onClick={handlerEyeClick}
+                      >
+                        {!showPassword ? <Eye /> : <EyeOff />}
+                      </button>
+                    )}
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="password"
+                render={({ field }) => (
+                  <FormItem className="relative">
+                    <FormControl>
+                      <Input
+                        placeholder="New password"
+                        type="text"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage className="absolute left-1 text-left text-sm" />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="confirmPassword"
+                render={({ field }) => (
+                  <FormItem className="relative">
+                    <FormControl>
+                      <Input
+                        placeholder="Confirm new password"
+                        type="text"
+                        onPaste={(e) => e.preventDefault()}
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage className="absolute left-1 text-left text-sm" />
+                  </FormItem>
+                )}
+              />
+              <Button type="submit">
+                {isSending ? <Loader className="animate-spin" /> : 'Update'}
+              </Button>
+            </form>
+          </Form>
         </DialogContent>
       </Dialog>
     </div>

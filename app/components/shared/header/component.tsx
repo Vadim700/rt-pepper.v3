@@ -5,7 +5,7 @@ import { Profile } from '../profile/component';
 import { Topic } from '../topic/component';
 import { ThemeSwitcher } from '../themSwitcher/component';
 import { SelectLanguage } from '../selectLanguage/component';
-import { AuthModal } from '../modals/auth-modal';
+import { AuthModal } from '../modals/RegistrationModal';
 
 interface Props {
   className?: string;

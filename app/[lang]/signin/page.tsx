@@ -1,6 +1,6 @@
 import GithubButton from '@/app/components/shared/githubButton/GitHubButton';
 import GoogleButton from '@/app/components/shared/googleButton/GoogleButton';
-import { AuthModal } from '@/app/components/shared/modals/auth-modal';
+import { AuthModal } from '@/app/components/shared/modals/RegistrationModal';
 import SignInForm from '@/app/components/shared/signinForm/component';
 import { addNewUser } from '@/services/usersActions';
 import { Suspense } from 'react';

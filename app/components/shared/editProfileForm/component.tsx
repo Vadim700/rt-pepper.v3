@@ -1,5 +1,5 @@
 'use client';
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
@@ -29,6 +29,7 @@ interface Props {
   className?: string;
   editProfile: (data: any) => Promise<void>;
   deleteProfile: () => Promise<void>;
+  editEmail: (email: string) => Promise<void>;
   userData: UserWithoutPassword;
   lang: string;
 }
@@ -37,6 +38,7 @@ export const EditProfileForm: React.FC<Props> = ({
   className,
   editProfile,
   deleteProfile,
+  editEmail,
   userData,
   lang,
 }) => {
@@ -45,6 +47,7 @@ export const EditProfileForm: React.FC<Props> = ({
   const [successDelete, setSuccessDelete] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
   const [successUpdate, setSuccessUpdate] = useState(false);
+  const [userEmail, setUserEmail] = useState(userData.email);
   const imageRef = useRef(null);
   const router = useRouter();
 
@@ -279,7 +282,7 @@ export const EditProfileForm: React.FC<Props> = ({
           />
           <div className="flex col-span-2 justify-self-end items-center gap-10">
             {successUpdate && (
-              <p className="text-2xl text-dark-green dark:text-green-400">
+              <p className="text-2xl text-dark-green dark:text-ginger animate-in animate-out">
                 Личная информация успешно обновлена
               </p>
             )}
@@ -291,7 +294,8 @@ export const EditProfileForm: React.FC<Props> = ({
       </Form>
       <span className="text-2xl">Информация для входа в личный кабинет</span>
       <div className="flex justify-between h-10 w-full border border-dark-green px-3 py-2 text-lg min-h-12 bg-white dark:text-black space-y-0">
-        {userData.email || 'email'} <EditEmailModal className={className} />
+        {userEmail || 'email'}{' '}
+        <EditEmailModal className={className} editEmail={editEmail} />
       </div>
       <div className="flex justify-between h-10 w-full border border-dark-green px-3 py-2 text-lg min-h-12 bg-white dark:text-black space-y-0">
         XXXXXXXXX <EditPasswordModal className={className} />

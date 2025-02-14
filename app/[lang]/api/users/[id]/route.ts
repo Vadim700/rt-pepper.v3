@@ -7,7 +7,7 @@ export async function PATCH(
 ) {
   try {
     const id = Number(params.id);
-    const { name, fullName, address, phone } = await req.json();
+    const { email, name, fullName, address, phone } = await req.json();
 
     const user = await prisma.user.findFirst({
       where: {
@@ -19,17 +19,28 @@ export async function PATCH(
       return NextResponse.json({ error: 'Пользователь не найден' });
     }
 
-    await prisma.user.update({
-      where: {
-        id,
-      },
-      data: {
-        name,
-        fullName,
-        address,
-        phone,
-      },
-    });
+    if (!email) {
+      await prisma.user.update({
+        where: {
+          id,
+        },
+        data: {
+          name,
+          fullName,
+          address,
+          phone,
+        },
+      });
+    } else {
+      await prisma.user.update({
+        where: {
+          id,
+        },
+        data: {
+          email,
+        },
+      });
+    }
 
     return NextResponse.json(user);
   } catch (error) {
