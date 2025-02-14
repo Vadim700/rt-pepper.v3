@@ -12,8 +12,9 @@ import {
 import { Input } from '@/app/components/ui/input';
 import { cn } from '@/lib/utils';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { Loader } from 'lucide-react';
 import { useSession } from 'next-auth/react';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
@@ -38,6 +39,7 @@ export type NewPost = {
 };
 
 export function AddPostForm({ addPost, className }: any) {
+  const [isLoading, setIsLoading] = useState(false);
   const session = useSession();
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -56,9 +58,16 @@ export function AddPostForm({ addPost, className }: any) {
     }
   }, [session.data, form]);
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    addPost(values);
-  }
+  const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    try {
+      setIsLoading(true);
+      await addPost(values);
+    } catch (e) {
+      console.log(e);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
     <Form {...form}>
@@ -90,8 +99,8 @@ export function AddPostForm({ addPost, className }: any) {
             </FormItem>
           )}
         />
-        <Button type="submit" className="block mx-auto">
-          Submit
+        <Button type="submit" className="flex justify-center mx-auto min-w-[100px]">
+          {isLoading ? <Loader className='animate-spin'/> : 'Submit'}
         </Button>
       </form>
     </Form>

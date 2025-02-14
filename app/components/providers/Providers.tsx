@@ -9,10 +9,8 @@ interface ProvidersProps {
 
 export const Providers = ({ children }: ProvidersProps) => {
   return (
-    <>
-      <ThemeProvider attribute="class">
-        <SessionProvider>{children}</SessionProvider>
-      </ThemeProvider>
-    </>
+    <ThemeProvider attribute="class">
+      <SessionProvider>{children}</SessionProvider>
+    </ThemeProvider>
   );
 };
