@@ -7,7 +7,8 @@ export async function PATCH(
 ) {
   try {
     const id = Number(params.id);
-    const { email, name, fullName, address, phone } = await req.json();
+    const { email, name, fullName, address, phone, password } =
+      await req.json();
 
     const user = await prisma.user.findFirst({
       where: {
@@ -19,7 +20,7 @@ export async function PATCH(
       return NextResponse.json({ error: 'Пользователь не найден' });
     }
 
-    if (!email) {
+    if (!email && !password) {
       await prisma.user.update({
         where: {
           id,
@@ -31,6 +32,25 @@ export async function PATCH(
           phone,
         },
       });
+
+      return NextResponse.json({
+        message: 'Данные пользователя успешно обновлены',
+        user,
+      });
+    } else if (password) {
+      await prisma.user.update({
+        where: {
+          id,
+        },
+        data: {
+          password,
+        },
+      });
+
+      return NextResponse.json({
+        message: 'Пароль успешно обновляен',
+        user,
+      });
     } else {
       await prisma.user.update({
         where: {
@@ -40,9 +60,12 @@ export async function PATCH(
           email,
         },
       });
-    }
 
-    return NextResponse.json(user);
+      return NextResponse.json({
+        message: 'Email успешно обновлен',
+        user,
+      });
+    }
   } catch (error) {
     console.log('[USER_PATCH] Server error', error);
     return NextResponse.json(

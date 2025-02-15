@@ -38,7 +38,7 @@ export const editUser = async (data: User) => {
 
     return res.json();
   } catch (e) {
-    console.log(e, '[editUser]');
+    throw new Error('Не получилось обновить данные пользователя');
   }
 };
 
@@ -54,13 +54,12 @@ export const deleteProfile = async (id: number) => {
 
     return res.json();
   } catch (e) {
-    console.log(e, '[deleteProfile]');
+    throw new Error(`Не получилось удалить профиль`);
   }
 };
 
 export const editUserEmail = async (data: { id: any; email: string }) => {
   const { id, email } = data;
-  console.log(id, email, '[editUserEmail]');
   try {
     const response = await fetch(
       process.env.NEXTAUTH_URL + `/api/users/${id}`,
@@ -77,6 +76,33 @@ export const editUserEmail = async (data: { id: any; email: string }) => {
     const data = await response.json();
     return data;
   } catch (e) {
-    console.error(`[editEmail] Не получилось изменить эл. почту: ${e}`);
+    throw new Error('Не получилось изменить адрес эл. почты');
+  }
+};
+
+export const editUserPassword = async (data: {
+  id: any;
+  newPassword: string;
+}) => {
+  const { id, newPassword } = data;
+
+  try {
+    const response = await fetch(process.env.NEXTAUTH_URL + `api/users/${id}`, {
+      method: 'PATCH',
+      body: JSON.stringify({
+        password: hashSync(newPassword, 10),
+      }),
+    });
+
+    if (!response.ok) {
+      throw new Error('Не удалось сделать запрос к API для изменения пароля');
+    }
+
+    console.log('response in client >>> ', response);
+
+    const data = await response.json();
+    return data;
+  } catch (e) {
+    throw new Error('Не получилось изменить пароль');
   }
 };

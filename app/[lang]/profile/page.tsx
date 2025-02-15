@@ -1,4 +1,5 @@
 import { EditProfileForm } from '@/app/components/shared/editProfileForm/component';
+import { Toaster } from '@/app/components/ui';
 import { getDictionary } from '@/app/dictionaries';
 import { authConfig } from '@/configs/auth';
 import { prisma } from '@/prisma/prisma-client';
@@ -6,10 +7,11 @@ import {
   deleteProfile,
   editUser,
   editUserEmail,
+  editUserPassword,
 } from '@/services/usersActions';
 import { User } from '@prisma/client';
+import { compare } from 'bcrypt';
 import { getServerSession } from 'next-auth';
-import { signIn, signOut } from 'next-auth/react';
 import { redirect } from 'next/navigation';
 
 type UserWithoutPassword = Omit<User, 'password'>;
@@ -18,6 +20,11 @@ interface SliceData {
   password: string;
   id: string;
   userWithoutPassword: UserWithoutPassword;
+}
+
+interface NewPassword {
+  currentPassword: string;
+  newPassword: string;
 }
 
 const Profile = async ({ params }: any) => {
@@ -55,7 +62,20 @@ const Profile = async ({ params }: any) => {
     const userData = { id, email };
 
     await editUserEmail(userData);
-    console.log(session, '>>> sesson on server');
+  };
+
+  const editPassword = async (passwordData: NewPassword) => {
+    'use server';
+
+    const { currentPassword, newPassword } = passwordData;
+
+    const isPasswordValid = await compare(currentPassword, password);
+    if (isPasswordValid) {
+      const userData = { id, newPassword };
+      await editUserPassword(userData);
+    } else {
+      throw new Error('Пароли не совпадают');
+    }
   };
 
   return (
@@ -68,6 +88,7 @@ const Profile = async ({ params }: any) => {
         editProfile={editProfileAction}
         deleteProfile={deleteProfileAction}
         editEmail={editEmail}
+        editPassword={editPassword}
         userData={userWithoutPassword}
         lang={lang}
       />

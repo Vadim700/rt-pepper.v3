@@ -1,5 +1,5 @@
 'use client';
-import React, { useRef, useState } from 'react';
+import React, { useState } from 'react';
 import {
   Dialog,
   DialogContent,
@@ -23,25 +23,34 @@ import {
   FormMessage,
 } from '@/app/components/ui/form';
 import { Button, Input } from '../../ui';
-import { editUser } from '@/services/usersActions';
+import { editUserPassword } from '@/services/usersActions';
 
 interface Props {
   className?: string;
+  editPassword: (newPassword: NewPassword) => Promise<void>;
+  setSuccessChangePassword: () => void;
+  setErrorChangePassword: () => void;
 }
 
-export const EditPasswordModal: React.FC<Props> = ({ className }) => {
+interface NewPassword {
+  currentPassword: string;
+  newPassword: any;
+}
+
+export const EditPasswordModal: React.FC<Props> = ({
+  className,
+  editPassword,
+  setSuccessChangePassword,
+  setErrorChangePassword,
+}) => {
   const [open, setOpen] = useState<boolean>(false);
   const [isSending, setIsSending] = useState<boolean>(false);
   const [showPassword, setShowPassword] = useState(false);
-  const [passwordValue, setPasswordValue] = useState('');
   const validateMessage = (chars: number): string => `Min ${chars} caraster`;
 
-  const editEmailSchema = z
+  const editPasswordSchema = z
     .object({
-      currentPassword: z
-        .string()
-        .min(6, { message: validateMessage(6) })
-        .email({ message: 'Invalid email' }),
+      currentPassword: z.string(),
       password: z.string().min(6, { message: validateMessage(6) }),
       confirmPassword: z.string(),
     })
@@ -50,10 +59,10 @@ export const EditPasswordModal: React.FC<Props> = ({ className }) => {
       path: ['confirmPassword'],
     });
 
-  type TRegForm = z.infer<typeof editEmailSchema>;
+  type TPasswordForm = z.infer<typeof editPasswordSchema>;
 
-  const form = useForm<TRegForm>({
-    resolver: zodResolver(editEmailSchema),
+  const form = useForm<TPasswordForm>({
+    resolver: zodResolver(editPasswordSchema),
     defaultValues: {
       currentPassword: '',
       password: '',
@@ -61,12 +70,18 @@ export const EditPasswordModal: React.FC<Props> = ({ className }) => {
     },
   });
 
-  const onSubmit = async (values: any) => {
+  const onSubmit = async (values: TPasswordForm) => {
     setIsSending(true);
+    const newPassword: NewPassword = {
+      currentPassword: values.currentPassword,
+      newPassword: values.confirmPassword,
+    };
     try {
-      // await editUser(values);
+      await editPassword(newPassword);
+      setSuccessChangePassword();
     } catch (e) {
       console.log('[AuthModal] Ничего не получилось!');
+      setErrorChangePassword();
     } finally {
       setIsSending(false);
     }
@@ -107,12 +122,14 @@ export const EditPasswordModal: React.FC<Props> = ({ className }) => {
                         placeholder="Current password"
                         type={!showPassword ? 'password' : 'text'}
                         {...field}
-                        onChange={(e) => setPasswordValue(e.target.value)}
-                        value={passwordValue}
+                        onChange={(e) =>
+                          form.setValue('currentPassword', e.target.value)
+                        }
+                        value={field.value}
                       />
                     </FormControl>
                     <FormMessage className="absolute left-1 text-left text-sm" />
-                    {passwordValue.length > 0 && (
+                    {field.value.length > 0 && (
                       <button
                         type="button"
                         className="absolute right-4 top-[50%] translate-y-[-50%] text-black !mt-0"
