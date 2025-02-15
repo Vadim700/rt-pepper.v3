@@ -88,7 +88,7 @@ export const EditEmailModal: React.FC<Props> = ({ className, editEmail }) => {
             <DialogTitle className="text-4xl text-center mb-4">
               Update your email
             </DialogTitle>
-            <DialogDescription className='text-base mb-4'>
+            <DialogDescription className="text-base mb-4">
               After changing the email address, you need to log in again.
             </DialogDescription>
           </DialogHeader>

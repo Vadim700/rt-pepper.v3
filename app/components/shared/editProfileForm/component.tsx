@@ -14,22 +14,28 @@ import {
   FormItem,
   FormMessage,
 } from '@/app/components/ui/form';
-import { Button, Input, Label } from '../../ui';
+import { Button, Input, Label, Toaster } from '../../ui';
 import type { User } from '@prisma/client';
 import { cn } from '@/lib/utils';
 import Image from 'next/image';
 import { signOut } from 'next-auth/react';
-import { useRouter } from 'next/navigation';
 import { EditEmailModal } from '../modals/EditEmailModal';
 import { EditPasswordModal } from '../modals/EditPasswordModal';
+import { useToast } from '@/hooks/use-toast';
+import { ToastAction } from '../../ui/toast';
 
 type UserWithoutPassword = Omit<User, 'password'>;
+interface NewPassword {
+  currentPassword: string;
+  newPassword: string;
+}
 
 interface Props {
   className?: string;
   editProfile: (data: any) => Promise<void>;
   deleteProfile: () => Promise<void>;
   editEmail: (email: string) => Promise<void>;
+  editPassword: (password: NewPassword) => Promise<void>;
   userData: UserWithoutPassword;
   lang: string;
 }
@@ -39,6 +45,7 @@ export const EditProfileForm: React.FC<Props> = ({
   editProfile,
   deleteProfile,
   editEmail,
+  editPassword,
   userData,
   lang,
 }) => {
@@ -47,9 +54,8 @@ export const EditProfileForm: React.FC<Props> = ({
   const [successDelete, setSuccessDelete] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
   const [successUpdate, setSuccessUpdate] = useState(false);
-  const [userEmail, setUserEmail] = useState(userData.email);
   const imageRef = useRef(null);
-  const router = useRouter();
+  const { toast } = useToast();
 
   const validateMessage = (chars: number): string => `Min ${chars} caraster`;
 
@@ -106,12 +112,32 @@ export const EditProfileForm: React.FC<Props> = ({
         ...values,
       });
       setSuccessUpdate(true);
+      toast({
+        title: 'Данные пользователя успешно обновлены',
+      });
     } catch (e) {
       console.log(e, '[EditProfileForm] Не получилось отправить данные');
+      toast({
+        variant: 'destructive',
+        title: 'Не получилось отправить данные',
+      });
     } finally {
       setIsSending(false);
       form.reset(values);
     }
+  };
+
+  const setSuccessChangePassword = () => {
+    toast({
+      title: 'Пароль успешно обновлен',
+    });
+  };
+
+  const setErrorChangePassword = () => {
+    toast({
+      variant: 'destructive',
+      title: 'Не получилось обновить пароль',
+    });
   };
 
   const onClickDeleteProfile = async () => {
@@ -281,11 +307,6 @@ export const EditProfileForm: React.FC<Props> = ({
             )}
           />
           <div className="flex col-span-2 justify-self-end items-center gap-10">
-            {successUpdate && (
-              <p className="text-2xl text-dark-green dark:text-ginger animate-in animate-out">
-                Личная информация успешно обновлена
-              </p>
-            )}
             <Button type="submit" className=" w-60">
               {isSending ? <Loader className="animate-spin" /> : 'Update'}
             </Button>
@@ -294,11 +315,17 @@ export const EditProfileForm: React.FC<Props> = ({
       </Form>
       <span className="text-2xl">Информация для входа в личный кабинет</span>
       <div className="flex justify-between h-10 w-full border border-dark-green px-3 py-2 text-lg min-h-12 bg-white dark:text-black space-y-0">
-        {userEmail || 'email'}{' '}
+        {userData.email || 'email'}{' '}
         <EditEmailModal className={className} editEmail={editEmail} />
       </div>
       <div className="flex justify-between h-10 w-full border border-dark-green px-3 py-2 text-lg min-h-12 bg-white dark:text-black space-y-0">
-        XXXXXXXXX <EditPasswordModal className={className} />
+        XXXXXXXXX{' '}
+        <EditPasswordModal
+          className={className}
+          editPassword={editPassword}
+          setSuccessChangePassword={setSuccessChangePassword}
+          setErrorChangePassword={setErrorChangePassword}
+        />
       </div>
       <Form {...form}>
         <form onSubmit={onClickDeleteProfile} className="self-start">
@@ -315,6 +342,20 @@ export const EditProfileForm: React.FC<Props> = ({
           </Button>
         </form>
       </Form>
+      {/* <Button
+        variant="outline"
+        onClick={() => {
+          toast({
+            variant: 'destructive',
+            title: 'Wow wow woooow! Its a TITLE! MF!',
+            description: 'There was a problem with your request.',
+            action: <ToastAction altText="Try again">Try again</ToastAction>,
+          });
+        }}
+      >
+        Show Toast
+      </Button> */}
+      <Toaster />
     </div>
   );
 };
