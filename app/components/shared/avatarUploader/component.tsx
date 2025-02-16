@@ -4,7 +4,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Loader, UserRound, X } from 'lucide-react';
+import { Check, Loader, UserRound, X } from 'lucide-react';
 
 import {
   Form,
@@ -58,7 +58,10 @@ export const AvatarUploader: React.FC<Props> = ({ className }) => {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(uploadAvatar)} className="mb-5">
+      <form
+        onSubmit={form.handleSubmit(uploadAvatar)}
+        className="relative mb-5"
+      >
         <div className="relative self-center">
           {selectedFile && (
             <span
@@ -98,6 +101,15 @@ export const AvatarUploader: React.FC<Props> = ({ className }) => {
           id="fileInput"
           tabIndex={5}
         />
+        {selectedFile && (
+          <button
+            type="submit"
+            onClick={onSaveAvatar}
+            className="absolute bottom-[10px] right-0 rounded-full bg-bg dark:bg-bg-dark transition-all hover:text-green-600 hover:scale-150"
+          >
+            <Check size={32} />
+          </button>
+        )}
       </form>
     </Form>
   );
