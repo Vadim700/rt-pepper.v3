@@ -22,7 +22,6 @@ import { signOut } from 'next-auth/react';
 import { EditEmailModal } from '../modals/EditEmailModal';
 import { EditPasswordModal } from '../modals/EditPasswordModal';
 import { useToast } from '@/hooks/use-toast';
-import { ToastAction } from '../../ui/toast';
 
 type UserWithoutPassword = Omit<User, 'password'>;
 interface NewPassword {
@@ -36,6 +35,7 @@ interface Props {
   deleteProfile: () => Promise<void>;
   editEmail: (email: string) => Promise<void>;
   editPassword: (password: NewPassword) => Promise<void>;
+  onUpload: () => void;
   userData: UserWithoutPassword;
   lang: string;
 }
@@ -46,14 +46,15 @@ export const EditProfileForm: React.FC<Props> = ({
   deleteProfile,
   editEmail,
   editPassword,
+  onUpload,
   userData,
   lang,
 }) => {
   const [isSending, setIsSending] = useState<boolean>(false);
   const [isDeleting, setIsDeleting] = useState(false);
-  const [successDelete, setSuccessDelete] = useState(false);
+  const [, setSuccessDelete] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
-  const [successUpdate, setSuccessUpdate] = useState(false);
+  const [, setSuccessUpdate] = useState(false);
   const imageRef = useRef(null);
   const { toast } = useToast();
 
@@ -64,17 +65,6 @@ export const EditProfileForm: React.FC<Props> = ({
     fullName: z.string().min(2, { message: validateMessage(2) }),
     address: z.string().min(2, { message: validateMessage(2) }),
     phone: z.string().min(2, { message: validateMessage(2) }),
-    // files: z
-    //   .instanceof(File)
-    //   .refine((file) => file.size <= 5 * 1024 * 1024, {
-    //     message: 'Файл должен быть не более 5 Mb',
-    //   })
-    //   .refine(
-    //     (file) => ['image/png', 'image/jpeg', 'image/jpg'].includes(file.type),
-    //     {
-    //       message: 'Only PNG, JPG, and JPEG files are allowed',
-    //     },
-    //   ),
   });
 
   type TRegForm = z.infer<typeof regSchema>;
@@ -98,16 +88,7 @@ export const EditProfileForm: React.FC<Props> = ({
   const onSubmitMainInfo = async (values: TRegForm) => {
     setIsSending(true);
     setSuccessUpdate(false);
-    // const file = form.getValues('files') as File;
     try {
-      // await editProfile({
-      //   ...JSON.parse(
-      //     JSON.stringify({
-      //       ...values,
-      //       image: file ? file.name : null,
-      //     }),
-      //   ),
-      // });
       await editProfile({
         ...values,
       });
@@ -155,12 +136,12 @@ export const EditProfileForm: React.FC<Props> = ({
   };
 
   return (
-    <div className={cn(className, 'flex flex-col gap-7 max-w-[900px]')}>
+    <div className={cn(className, 'flex flex-col gap-7 w-full max-w-[900px]')}>
       <span className="text-2xl">Личная информация</span>
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmitMainInfo)}
-          className="grid gap-6 grid-rows-4 grid-cols-2"
+          className="grid gap-6 grid-rows-3 grid-cols-2"
         >
           <FormField
             control={form.control}
@@ -219,75 +200,6 @@ export const EditProfileForm: React.FC<Props> = ({
               </FormItem>
             )}
           />
-          <div className="row-span-2 self-end max-h-[140px] flex border h-full items-start px-3 py-2 gap-4">
-            <div className="relative self-center">
-              {selectedFile && (
-                <span
-                  className="absolute top-[3px] right-[3px] cursor-pointer rounded-full bg-bg dark:bg-bg-dark hover:rotate-90 transition-all hover:text-red-500"
-                  onClick={() => setSelectedFile(null)}
-                >
-                  <X size={16} />
-                </span>
-              )}
-              <Label
-                id="imageLabel"
-                className=" w-24 aspect-square border rounded-full shrink-0 grid place-items-center overflow-hidden cursor-pointer "
-                htmlFor="fileInput"
-              >
-                {selectedFile ? (
-                  <Image
-                    src={URL.createObjectURL(selectedFile)}
-                    ref={imageRef}
-                    width={100}
-                    height={100}
-                    alt="Avatar"
-                    className="object-cover aspect-square"
-                  />
-                ) : (
-                  <UserRound size={55} className="text-ginger" />
-                )}
-              </Label>
-            </div>
-            <div className="h-full justify-evenly self-center flex flex-col pl-5">
-              {/* <FormField
-                control={form.control}
-                name="files"
-                render={({ field }) => (
-                  <FormItem className="relative">
-                    <FormControl className="">
-                      <Input
-                        placeholder="Image"
-                        className=""
-                        id="fileInput"
-                        type="file"
-                        onChange={handleFileChange}
-                      />
-                    </FormControl>
-                    <FormMessage className="absolute left-1 text-left text-sm" />
-                  </FormItem>
-                )}
-              /> */}
-              <label
-                htmlFor="fileInput"
-                className="h-6 cursor-pointer hover:underline uppercase"
-              >
-                Загрузить фото
-                <input
-                  className="h-0 opacity-0"
-                  type="file"
-                  name="files"
-                  onChange={handleFileChange}
-                  id="fileInput"
-                  tabIndex={5}
-                />
-              </label>
-              <p className="text-sm ">
-                Формат: PNG, JPG, JPEG <br />
-                Размер файла: не более 10 МБ <br />
-                Размеры: не менее 400x400 px
-              </p>
-            </div>
-          </div>
           <FormField
             control={form.control}
             name="address"
@@ -342,19 +254,6 @@ export const EditProfileForm: React.FC<Props> = ({
           </Button>
         </form>
       </Form>
-      {/* <Button
-        variant="outline"
-        onClick={() => {
-          toast({
-            variant: 'destructive',
-            title: 'Wow wow woooow! Its a TITLE! MF!',
-            description: 'There was a problem with your request.',
-            action: <ToastAction altText="Try again">Try again</ToastAction>,
-          });
-        }}
-      >
-        Show Toast
-      </Button> */}
       <Toaster />
     </div>
   );

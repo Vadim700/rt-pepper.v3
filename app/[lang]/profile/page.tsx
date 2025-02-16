@@ -14,6 +14,19 @@ import { compare } from 'bcrypt';
 import { getServerSession } from 'next-auth';
 import { redirect } from 'next/navigation';
 
+import { readFileSync } from 'fs';
+import {
+  S3Client,
+  PutObjectCommand,
+  CreateBucketCommand,
+  DeleteObjectCommand,
+  DeleteBucketCommand,
+  paginateListObjectsV2,
+  GetObjectCommand,
+  ListObjectsV2Command,
+} from '@aws-sdk/client-s3';
+import { AvatarUploader } from '@/app/components/shared/avatarUploader/component';
+
 type UserWithoutPassword = Omit<User, 'password'>;
 type UserWithoutEmail = Omit<User, 'id'>;
 interface SliceData {
@@ -78,17 +91,41 @@ const Profile = async ({ params }: any) => {
     }
   };
 
+  const config = {
+    api: {
+      bodyParser: false,
+    },
+  };
+
+  const uploadAvatar = async () => {
+    'use server';
+
+    const BUCKET_NAME = process.env.AWS_BACKET_NAME || '';
+    const ACCESS_KEY = process.env.AWS_ACCESS_KEY_ID || '';
+    const SECRET_KEY = process.env.AWS_SEKRET_ACCESS_KEY || '';
+
+    const s3Client = new S3Client({});
+    const bucketName = 'rt-pepper';
+
+    await s3Client.send(
+      new PutObjectCommand({
+        Bucket: bucketName,
+        Key: 'bucket-text',
+        Body: 'Hello bucket!',
+      }),
+    );
+  };
+
   return (
     <main className="bg-bg dark:bg-bg-dark flex flex-col justify-center items-center px-4">
-      <h1 className="mb-12 text-3xl">
-        Profile of <span className="text-ginger">{session?.user?.name}</span>
-      </h1>
+      <AvatarUploader />
       <EditProfileForm
         className={''}
         editProfile={editProfileAction}
         deleteProfile={deleteProfileAction}
         editEmail={editEmail}
         editPassword={editPassword}
+        onUpload={uploadAvatar}
         userData={userWithoutPassword}
         lang={lang}
       />
