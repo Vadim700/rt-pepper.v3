@@ -35,7 +35,6 @@ interface Props {
   deleteProfile: () => Promise<void>;
   editEmail: (email: string) => Promise<void>;
   editPassword: (password: NewPassword) => Promise<void>;
-  onUpload: () => void;
   userData: UserWithoutPassword;
   lang: string;
 }
@@ -46,7 +45,6 @@ export const EditProfileForm: React.FC<Props> = ({
   deleteProfile,
   editEmail,
   editPassword,
-  onUpload,
   userData,
   lang,
 }) => {

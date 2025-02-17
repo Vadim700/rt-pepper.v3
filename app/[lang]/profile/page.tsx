@@ -14,18 +14,13 @@ import { compare } from 'bcrypt';
 import { getServerSession } from 'next-auth';
 import { redirect } from 'next/navigation';
 
-import { readFileSync } from 'fs';
-import {
-  S3Client,
-  PutObjectCommand,
-  CreateBucketCommand,
-  DeleteObjectCommand,
-  DeleteBucketCommand,
-  paginateListObjectsV2,
-  GetObjectCommand,
-  ListObjectsV2Command,
-} from '@aws-sdk/client-s3';
+// import { S3Client, GetObjectCommand } from '@aws-sdk/client-s3';
 import { AvatarUploader } from '@/app/components/shared/avatarUploader/component';
+import { UploadImageResponse } from '../api/upload/route';
+
+import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
+import { NextRequest, NextResponse } from 'next/server';
+import { v4 as uuidv4 } from 'uuid';
 
 type UserWithoutPassword = Omit<User, 'password'>;
 type UserWithoutEmail = Omit<User, 'id'>;
@@ -44,6 +39,13 @@ const Profile = async ({ params }: any) => {
   const { lang } = params;
   const session = await getServerSession(authConfig);
   const dict = await getDictionary(lang);
+
+  const {
+    YANDEX_ACCESS_KEY_ID,
+    YANDEX_SEKRET_ACCESS_KEY,
+    YANDEX_DEFAULT_REGION,
+    YANDEX_BACKET_NAME,
+  } = process.env;
 
   if (!session) {
     redirect('/signin');
@@ -91,41 +93,50 @@ const Profile = async ({ params }: any) => {
     }
   };
 
-  const config = {
-    api: {
-      bodyParser: false,
-    },
-  };
-
-  const uploadAvatar = async () => {
+  const handleFile = async (formData: any) => {
     'use server';
 
-    const BUCKET_NAME = process.env.AWS_BACKET_NAME || '';
-    const ACCESS_KEY = process.env.AWS_ACCESS_KEY_ID || '';
-    const SECRET_KEY = process.env.AWS_SEKRET_ACCESS_KEY || '';
+    try {
+      const file = formData.get('image');
+      if (!file) {
+        throw new Error('Файл не найден в formData');
+      }
 
-    const s3Client = new S3Client({});
-    const bucketName = 'rt-pepper';
+      const fileName = `${uuidv4()}-${formData.name}`;
+      const fileBuffer = await file.arrayBuffer();
+      const fileBytes = Buffer.from(new Uint8Array(fileBuffer));
 
-    await s3Client.send(
-      new PutObjectCommand({
-        Bucket: bucketName,
-        Key: 'bucket-text',
-        Body: 'Hello bucket!',
-      }),
-    );
+      const s3Client = new S3Client({
+        endpoint: 'https://storage.yandexcloud.net',
+        credentials: {
+          accessKeyId: YANDEX_ACCESS_KEY_ID || '',
+          secretAccessKey: YANDEX_SEKRET_ACCESS_KEY || '',
+        },
+        region: YANDEX_DEFAULT_REGION,
+      });
+
+      await s3Client.send(
+        new PutObjectCommand({
+          Bucket: YANDEX_BACKET_NAME,
+          Key: fileName + file.name,
+          Body: fileBytes,
+          ContentType: formData.type,
+        }),
+      );
+    } catch (e) {
+      throw new Error('Ошибка при получении изображения: ' + e);
+    }
   };
 
   return (
     <main className="bg-bg dark:bg-bg-dark flex flex-col justify-center items-center px-4">
-      <AvatarUploader />
+      <AvatarUploader putFile={handleFile} />
       <EditProfileForm
         className={''}
         editProfile={editProfileAction}
         deleteProfile={deleteProfileAction}
         editEmail={editEmail}
         editPassword={editPassword}
-        onUpload={uploadAvatar}
         userData={userWithoutPassword}
         lang={lang}
       />
