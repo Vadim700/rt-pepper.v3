@@ -16,9 +16,12 @@ import { redirect } from 'next/navigation';
 
 // import { S3Client, GetObjectCommand } from '@aws-sdk/client-s3';
 import { AvatarUploader } from '@/app/components/shared/avatarUploader/component';
-import { UploadImageResponse } from '../api/upload/route';
 
-import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
+import {
+  S3Client,
+  PutObjectCommand,
+  GetObjectCommand,
+} from '@aws-sdk/client-s3';
 import { NextRequest, NextResponse } from 'next/server';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -102,7 +105,7 @@ const Profile = async ({ params }: any) => {
         throw new Error('Файл не найден в formData');
       }
 
-      const fileName = `${uuidv4()}-${formData.name}`;
+      const fileName = `${uuidv4()}-${file.name}`;
       const fileBuffer = await file.arrayBuffer();
       const fileBytes = Buffer.from(new Uint8Array(fileBuffer));
 
@@ -115,12 +118,16 @@ const Profile = async ({ params }: any) => {
         region: YANDEX_DEFAULT_REGION,
       });
 
+      // TODO после отправки изображения в хранилище, ссылку на файл сохранять в БД users.avatar
+      const encodeName = encodeURIComponent(fileName);
+      const imageUrl = `https://storage.yandexcloud.net/${YANDEX_BACKET_NAME}/${encodeName}`;
+
       await s3Client.send(
         new PutObjectCommand({
           Bucket: YANDEX_BACKET_NAME,
-          Key: fileName + file.name,
+          Key: fileName,
           Body: fileBytes,
-          ContentType: formData.type,
+          ContentType: file.type,
         }),
       );
     } catch (e) {

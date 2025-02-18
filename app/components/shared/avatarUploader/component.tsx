@@ -51,7 +51,9 @@ export const AvatarUploader: React.FC<Props> = ({ className, putFile }) => {
     <div className="relative self-center mb-5">
       {selectedFile && (
         <span
-          className="absolute top-[10px] right-[10px] cursor-pointer rounded-full bg-bg dark:bg-bg-dark hover:rotate-90 transition-all hover:text-red-500"
+          className={cn(
+            'absolute top-[10px] right-[10px] cursor-pointer rounded-full bg-bg dark:bg-bg-dark hover:rotate-90 transition-all hover:text-red-500',
+          )}
           onClick={() => setSelectedFile(undefined)}
         >
           <X size={25} />
