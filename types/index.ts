@@ -40,8 +40,7 @@ export interface User {
   email: string;
   address: Address;
   phone: string;
-  website: string;
-  company: Company;
+  avatar: string
 }
 
 export type Todo = {

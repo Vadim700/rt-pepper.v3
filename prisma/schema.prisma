@@ -55,9 +55,8 @@ model User {
   providerId String?
 
   phone   String?
-  website String?
   address String?
-  company String?
+  avatar  String?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

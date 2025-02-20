@@ -7,6 +7,7 @@ import {
   editUser,
   editUserEmail,
   editUserPassword,
+  setAvatar,
 } from '@/services/usersActions';
 import { User } from '@prisma/client';
 import { compare } from 'bcrypt';
@@ -111,7 +112,7 @@ const Profile = async ({ params }: any) => {
 
       // TODO после отправки изображения в хранилище, ссылку на файл сохранять в БД users.avatar
       const encodeName = encodeURIComponent(fileName);
-      const imageUrl = `https://storage.yandexcloud.net/${YANDEX_BACKET_NAME}/${encodeName}`;
+      const url = `https://storage.yandexcloud.net/${YANDEX_BACKET_NAME}/${encodeName}`;
 
       await s3Client.send(
         new PutObjectCommand({
@@ -121,6 +122,13 @@ const Profile = async ({ params }: any) => {
           ContentType: file.type,
         }),
       );
+
+      const data = { id, url };
+      try {
+        setAvatar(data);
+      } catch (e) {
+        throw new Error('Ошибка при отправке URL в БД');
+      }
     } catch (e) {
       throw new Error('Ошибка при получении изображения: ' + e);
     }
@@ -128,7 +136,6 @@ const Profile = async ({ params }: any) => {
 
   return (
     <main className="bg-bg dark:bg-bg-dark flex flex-col justify-center items-center px-4">
-      {/* <AvatarUploader putFile={handleFile} /> */}
       <EditProfileForm
         className={''}
         editProfile={editProfileAction}

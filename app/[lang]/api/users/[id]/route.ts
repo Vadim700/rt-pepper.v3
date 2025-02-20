@@ -7,8 +7,14 @@ export async function PATCH(
 ) {
   try {
     const id = Number(params.id);
-    const { email, name, fullName, address, phone, password } =
+    const { email, name, fullName, address, phone, password, avatar } =
       await req.json();
+
+    const sendingName =
+      email || fullName || address || phone || password || avatar;
+
+    console.log(`${sendingName} >>>`, sendingName);
+    console.log('ID >>>', id);
 
     const user = await prisma.user.findFirst({
       where: {
@@ -20,7 +26,55 @@ export async function PATCH(
       return NextResponse.json({ error: 'Пользователь не найден' });
     }
 
-    if (!email && !password) {
+    if (avatar) {
+      await prisma.user.update({
+        where: {
+          id,
+        },
+        data: {
+          avatar,
+        },
+      });
+
+      return NextResponse.json({
+        message: 'Аватар успешно успешно установлен',
+        user,
+      });
+    }
+
+    if (password) {
+      await prisma.user.update({
+        where: {
+          id,
+        },
+        data: {
+          password,
+        },
+      });
+
+      return NextResponse.json({
+        message: 'Пароль успешно обновляен',
+        user,
+      });
+    }
+
+    if (email) {
+      await prisma.user.update({
+        where: {
+          id,
+        },
+        data: {
+          email,
+        },
+      });
+
+      return NextResponse.json({
+        message: 'Email успешно обновлен',
+        user,
+      });
+    }
+
+    if (!email && !password && !avatar) {
       await prisma.user.update({
         where: {
           id,
@@ -35,34 +89,6 @@ export async function PATCH(
 
       return NextResponse.json({
         message: 'Данные пользователя успешно обновлены',
-        user,
-      });
-    } else if (password) {
-      await prisma.user.update({
-        where: {
-          id,
-        },
-        data: {
-          password,
-        },
-      });
-
-      return NextResponse.json({
-        message: 'Пароль успешно обновляен',
-        user,
-      });
-    } else {
-      await prisma.user.update({
-        where: {
-          id,
-        },
-        data: {
-          email,
-        },
-      });
-
-      return NextResponse.json({
-        message: 'Email успешно обновлен',
         user,
       });
     }

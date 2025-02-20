@@ -93,9 +93,16 @@ export const EditProfileForm: React.FC<Props> = ({
       formData.append('image', event.target.files[0]);
 
       try {
-        putFile(formData);
+        await putFile(formData);
+        toast({
+          title: 'Аватар успешно загружен',
+        });
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Произошла ошибка');
+        toast({
+          variant: 'destructive',
+          title: err instanceof Error ? err.message : 'Произошла ошибка',
+        });
       } finally {
         setUploading(false);
       }
@@ -154,6 +161,7 @@ export const EditProfileForm: React.FC<Props> = ({
 
   return (
     <div className={cn(className, 'flex flex-col gap-7 w-full max-w-[900px]')}>
+      <p>Avatar: {userData.avatar}</p>
       <span className="text-2xl">Личная информация</span>
       <Form {...form}>
         <form
@@ -218,7 +226,7 @@ export const EditProfileForm: React.FC<Props> = ({
             )}
           />
           <FormItem className="relative row-span-2 flex flex-col">
-            {uploading ? 'Загрузка...' : 'User avatar'}
+            User avatar
             <div className=" self-stretch flex grow border items-start px-3 py-2 gap-4">
               <div className="relative self-center group">
                 {selectedFile && (
