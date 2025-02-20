@@ -125,7 +125,7 @@ const Profile = async ({ params }: any) => {
 
       const data = { id, url };
       try {
-        setAvatar(data);
+        await setAvatar(data);
       } catch (e) {
         throw new Error('Ошибка при отправке URL в БД');
       }
@@ -136,6 +136,7 @@ const Profile = async ({ params }: any) => {
 
   return (
     <main className="bg-bg dark:bg-bg-dark flex flex-col justify-center items-center px-4">
+      <h1 className="text-5xl mb-20 text-center">Profile of <span className='text-ginger'>{findUser?.fullName}</span></h1>
       <EditProfileForm
         className={''}
         editProfile={editProfileAction}

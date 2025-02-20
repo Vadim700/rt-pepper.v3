@@ -18,7 +18,7 @@ import { Button, Input, Label, Toaster } from '../../ui';
 import type { User } from '@prisma/client';
 import { cn } from '@/lib/utils';
 import Image from 'next/image';
-import { signOut } from 'next-auth/react';
+import { signOut, useSession } from 'next-auth/react';
 import { EditEmailModal } from '../modals/EditEmailModal';
 import { EditPasswordModal } from '../modals/EditPasswordModal';
 import { useToast } from '@/hooks/use-toast';
@@ -56,9 +56,10 @@ export const EditProfileForm: React.FC<Props> = ({
   const [, setSuccessUpdate] = useState(false);
   const imageRef = useRef(null);
   const { toast } = useToast();
-  const [selectedFile, setSelectedFile] = useState<File>();
+  const [selectedFile, setSelectedFile] = useState<any>();
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [avatarUrl, setAvatarUrl] = useState(userData.avatar);
 
   const validateMessage = (chars: number): string => `Min ${chars} caraster`;
 
@@ -88,12 +89,14 @@ export const EditProfileForm: React.FC<Props> = ({
       setUploading(true);
       setError(null);
       setSelectedFile(event.target.files[0]);
+      setAvatarUrl(userData.avatar);
 
       const formData = new FormData();
       formData.append('image', event.target.files[0]);
 
       try {
         await putFile(formData);
+        await setAvatarUrl(userData.avatar);
         toast({
           title: 'Аватар успешно загружен',
         });
@@ -161,7 +164,6 @@ export const EditProfileForm: React.FC<Props> = ({
 
   return (
     <div className={cn(className, 'flex flex-col gap-7 w-full max-w-[900px]')}>
-      <p>Avatar: {userData.avatar}</p>
       <span className="text-2xl">Личная информация</span>
       <Form {...form}>
         <form
@@ -229,9 +231,9 @@ export const EditProfileForm: React.FC<Props> = ({
             User avatar
             <div className=" self-stretch flex grow border items-start px-3 py-2 gap-4">
               <div className="relative self-center group">
-                {selectedFile && (
+                {(userData.avatar || selectedFile) && (
                   <span
-                    className="absolute top-[3px] right-[3px] cursor-pointer rounded-full bg-bg dark:bg-bg-dark hover:rotate-90 transition-all hover:text-red-500"
+                    className="absolute top-[5px] right-[5px] cursor-pointer rounded-full bg-bg dark:bg-bg-dark hover:rotate-90 transition-all hover:text-red-500"
                     onClick={() => setSelectedFile(undefined)}
                   >
                     <X size={16} />
@@ -242,9 +244,9 @@ export const EditProfileForm: React.FC<Props> = ({
                   className=" w-28 aspect-square border rounded-full shrink-0 grid place-items-center overflow-hidden cursor-pointer "
                   htmlFor="fileInput"
                 >
-                  {selectedFile ? (
+                  {selectedFile || avatarUrl ? (
                     <Image
-                      src={URL.createObjectURL(selectedFile)}
+                      src={avatarUrl || URL.createObjectURL(selectedFile)}
                       ref={imageRef}
                       width={105}
                       height={105}
