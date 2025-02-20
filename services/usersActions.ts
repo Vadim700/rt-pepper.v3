@@ -106,3 +106,24 @@ export const editUserPassword = async (data: {
     throw new Error('Не получилось изменить пароль');
   }
 };
+
+export const setAvatar = async (data: { id: string; url: string }) => {
+  const { id, url } = data;
+  console.log('Set Avatar: >>> ', url);
+  try {
+    const response = await fetch(process.env.NEXTAUTH_URL + `api/users/${id}`, {
+      method: 'PATCH',
+      body: JSON.stringify({
+        avatar: url,
+      }),
+    });
+
+    if (!response.ok) {
+      throw new Error('Не получилось сделать запрос к API');
+    }
+
+    return response.json();
+  } catch (e) {
+    throw new Error('Не получилось установить аватар');
+  }
+};

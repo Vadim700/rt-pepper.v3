@@ -40,8 +40,7 @@ export interface User {
   email: string;
   address: Address;
   phone: string;
-  website: string;
-  company: Company;
+  avatar: string
 }
 
 export type Todo = {
@@ -64,3 +63,10 @@ export type Album = {
   id: number;
   titel: String;
 };
+
+export interface UploadImageResponse {
+  success: boolean;
+  message: string;
+  imageUrl?: string;
+  error?: string;
+}

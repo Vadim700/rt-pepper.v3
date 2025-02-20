@@ -1,5 +1,4 @@
 import { EditProfileForm } from '@/app/components/shared/editProfileForm/component';
-import { Toaster } from '@/app/components/ui';
 import { getDictionary } from '@/app/dictionaries';
 import { authConfig } from '@/configs/auth';
 import { prisma } from '@/prisma/prisma-client';
@@ -8,18 +7,14 @@ import {
   editUser,
   editUserEmail,
   editUserPassword,
+  setAvatar,
 } from '@/services/usersActions';
 import { User } from '@prisma/client';
 import { compare } from 'bcrypt';
 import { getServerSession } from 'next-auth';
 import { redirect } from 'next/navigation';
-
-// import { S3Client, GetObjectCommand } from '@aws-sdk/client-s3';
 import { AvatarUploader } from '@/app/components/shared/avatarUploader/component';
-import { UploadImageResponse } from '../api/upload/route';
-
 import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
-import { NextRequest, NextResponse } from 'next/server';
 import { v4 as uuidv4 } from 'uuid';
 
 type UserWithoutPassword = Omit<User, 'password'>;
@@ -60,17 +55,17 @@ const Profile = async ({ params }: any) => {
   const { password, id, ...userWithoutPassword }: SliceData & any =
     findUser ?? {};
 
-  async function editProfileAction(data: UserWithoutEmail) {
+  const editProfileAction = async (data: UserWithoutEmail) => {
     'use server';
 
     const userData = { id, ...data };
     await editUser(userData);
-  }
+  };
 
-  async function deleteProfileAction() {
+  const deleteProfileAction = async () => {
     'use server';
     await deleteProfile(id);
-  }
+  };
 
   const editEmail = async (email: string) => {
     'use server';
@@ -102,7 +97,7 @@ const Profile = async ({ params }: any) => {
         throw new Error('Файл не найден в formData');
       }
 
-      const fileName = `${uuidv4()}-${formData.name}`;
+      const fileName = `${uuidv4()}-${file.name}`;
       const fileBuffer = await file.arrayBuffer();
       const fileBytes = Buffer.from(new Uint8Array(fileBuffer));
 
@@ -115,14 +110,25 @@ const Profile = async ({ params }: any) => {
         region: YANDEX_DEFAULT_REGION,
       });
 
+      // TODO после отправки изображения в хранилище, ссылку на файл сохранять в БД users.avatar
+      const encodeName = encodeURIComponent(fileName);
+      const url = `https://storage.yandexcloud.net/${YANDEX_BACKET_NAME}/${encodeName}`;
+
       await s3Client.send(
         new PutObjectCommand({
           Bucket: YANDEX_BACKET_NAME,
-          Key: fileName + file.name,
+          Key: fileName,
           Body: fileBytes,
-          ContentType: formData.type,
+          ContentType: file.type,
         }),
       );
+
+      const data = { id, url };
+      try {
+        await setAvatar(data);
+      } catch (e) {
+        throw new Error('Ошибка при отправке URL в БД');
+      }
     } catch (e) {
       throw new Error('Ошибка при получении изображения: ' + e);
     }
@@ -130,13 +136,14 @@ const Profile = async ({ params }: any) => {
 
   return (
     <main className="bg-bg dark:bg-bg-dark flex flex-col justify-center items-center px-4">
-      <AvatarUploader putFile={handleFile} />
+      <h1 className="text-5xl mb-20 text-center">Profile of <span className='text-ginger'>{findUser?.fullName}</span></h1>
       <EditProfileForm
         className={''}
         editProfile={editProfileAction}
         deleteProfile={deleteProfileAction}
         editEmail={editEmail}
         editPassword={editPassword}
+        putFile={handleFile}
         userData={userWithoutPassword}
         lang={lang}
       />

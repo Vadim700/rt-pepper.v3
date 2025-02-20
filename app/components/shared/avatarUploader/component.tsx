@@ -1,19 +1,9 @@
 'use client';
-import React, { useEffect, useRef, useState } from 'react';
-
-import { useForm } from 'react-hook-form';
-import { unknown, z } from 'zod';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { Check, Loader, UserRound, X } from 'lucide-react';
-
-import { Form, FormMessage } from '@/app/components/ui/form';
-import type { User } from '@prisma/client';
+import React, { useRef, useState } from 'react';
+import { UserRound, X } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import Image from 'next/image';
-import { useToast } from '@/hooks/use-toast';
-import { Button, Input, Label, Toaster } from '../../ui';
-// import { getImage } from '@/services/imagesAction';
-import { v4 as uuidv4 } from 'uuid';
+import { Label } from '../../ui';
 
 interface Props {
   className?: string;
@@ -51,7 +41,9 @@ export const AvatarUploader: React.FC<Props> = ({ className, putFile }) => {
     <div className="relative self-center mb-5">
       {selectedFile && (
         <span
-          className="absolute top-[10px] right-[10px] cursor-pointer rounded-full bg-bg dark:bg-bg-dark hover:rotate-90 transition-all hover:text-red-500"
+          className={cn(
+            'absolute top-[10px] right-[10px] cursor-pointer rounded-full bg-bg dark:bg-bg-dark hover:rotate-90 transition-all hover:text-red-500',
+          )}
           onClick={() => setSelectedFile(undefined)}
         >
           <X size={25} />
