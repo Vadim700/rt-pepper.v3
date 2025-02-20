@@ -1,5 +1,4 @@
 import { EditProfileForm } from '@/app/components/shared/editProfileForm/component';
-import { Toaster } from '@/app/components/ui';
 import { getDictionary } from '@/app/dictionaries';
 import { authConfig } from '@/configs/auth';
 import { prisma } from '@/prisma/prisma-client';
@@ -13,16 +12,8 @@ import { User } from '@prisma/client';
 import { compare } from 'bcrypt';
 import { getServerSession } from 'next-auth';
 import { redirect } from 'next/navigation';
-
-// import { S3Client, GetObjectCommand } from '@aws-sdk/client-s3';
 import { AvatarUploader } from '@/app/components/shared/avatarUploader/component';
-
-import {
-  S3Client,
-  PutObjectCommand,
-  GetObjectCommand,
-} from '@aws-sdk/client-s3';
-import { NextRequest, NextResponse } from 'next/server';
+import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
 import { v4 as uuidv4 } from 'uuid';
 
 type UserWithoutPassword = Omit<User, 'password'>;
@@ -63,17 +54,17 @@ const Profile = async ({ params }: any) => {
   const { password, id, ...userWithoutPassword }: SliceData & any =
     findUser ?? {};
 
-  async function editProfileAction(data: UserWithoutEmail) {
+  const editProfileAction = async (data: UserWithoutEmail) => {
     'use server';
 
     const userData = { id, ...data };
     await editUser(userData);
-  }
+  };
 
-  async function deleteProfileAction() {
+  const deleteProfileAction = async () => {
     'use server';
     await deleteProfile(id);
-  }
+  };
 
   const editEmail = async (email: string) => {
     'use server';
@@ -137,13 +128,14 @@ const Profile = async ({ params }: any) => {
 
   return (
     <main className="bg-bg dark:bg-bg-dark flex flex-col justify-center items-center px-4">
-      <AvatarUploader putFile={handleFile} />
+      {/* <AvatarUploader putFile={handleFile} /> */}
       <EditProfileForm
         className={''}
         editProfile={editProfileAction}
         deleteProfile={deleteProfileAction}
         editEmail={editEmail}
         editPassword={editPassword}
+        putFile={handleFile}
         userData={userWithoutPassword}
         lang={lang}
       />

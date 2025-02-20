@@ -35,6 +35,7 @@ interface Props {
   deleteProfile: () => Promise<void>;
   editEmail: (email: string) => Promise<void>;
   editPassword: (password: NewPassword) => Promise<void>;
+  putFile: (file: any) => void;
   userData: UserWithoutPassword;
   lang: string;
 }
@@ -45,16 +46,19 @@ export const EditProfileForm: React.FC<Props> = ({
   deleteProfile,
   editEmail,
   editPassword,
+  putFile,
   userData,
   lang,
 }) => {
   const [isSending, setIsSending] = useState<boolean>(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const [, setSuccessDelete] = useState(false);
-  const [selectedFile, setSelectedFile] = useState(null);
   const [, setSuccessUpdate] = useState(false);
   const imageRef = useRef(null);
   const { toast } = useToast();
+  const [selectedFile, setSelectedFile] = useState<File>();
+  const [uploading, setUploading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const validateMessage = (chars: number): string => `Min ${chars} caraster`;
 
@@ -77,9 +81,24 @@ export const EditProfileForm: React.FC<Props> = ({
     },
   });
 
-  const handleFileChange = (event: any) => {
+  const handleFileChange = async (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
     if (event.target.files && event.target.files[0]) {
+      setUploading(true);
+      setError(null);
       setSelectedFile(event.target.files[0]);
+
+      const formData = new FormData();
+      formData.append('image', event.target.files[0]);
+
+      try {
+        putFile(formData);
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'Произошла ошибка');
+      } finally {
+        setUploading(false);
+      }
     }
   };
 
@@ -139,7 +158,7 @@ export const EditProfileForm: React.FC<Props> = ({
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmitMainInfo)}
-          className="grid gap-6 grid-rows-3 grid-cols-2"
+          className="grid gap-6 grid-rows-4 grid-cols-2"
         >
           <FormField
             control={form.control}
@@ -198,6 +217,63 @@ export const EditProfileForm: React.FC<Props> = ({
               </FormItem>
             )}
           />
+          <FormItem className="relative row-span-2 flex flex-col">
+            {uploading ? 'Загрузка...' : 'User avatar'}
+            <div className=" self-stretch flex grow border items-start px-3 py-2 gap-4">
+              <div className="relative self-center group">
+                {selectedFile && (
+                  <span
+                    className="absolute top-[3px] right-[3px] cursor-pointer rounded-full bg-bg dark:bg-bg-dark hover:rotate-90 transition-all hover:text-red-500"
+                    onClick={() => setSelectedFile(undefined)}
+                  >
+                    <X size={16} />
+                  </span>
+                )}
+                <Label
+                  id="imageLabel"
+                  className=" w-28 aspect-square border rounded-full shrink-0 grid place-items-center overflow-hidden cursor-pointer "
+                  htmlFor="fileInput"
+                >
+                  {selectedFile ? (
+                    <Image
+                      src={URL.createObjectURL(selectedFile)}
+                      ref={imageRef}
+                      width={105}
+                      height={105}
+                      alt="Avatar"
+                      className="object-cover aspect-square"
+                    />
+                  ) : (
+                    <UserRound
+                      size={70}
+                      className="text-ginger group-hover:text-white"
+                    />
+                  )}
+                </Label>
+              </div>
+              <div className="h-full justify-evenly self-center flex flex-col pl-5">
+                <label
+                  htmlFor="fileInput"
+                  className="h-6 cursor-pointer hover:underline uppercase"
+                >
+                  Загрузить фото
+                  <input
+                    className="hidden"
+                    type="file"
+                    name="files"
+                    onChange={handleFileChange}
+                    id="fileInput"
+                    tabIndex={5}
+                  />
+                </label>
+                <p className="text-sm ">
+                  Формат: PNG, JPG, JPEG <br />
+                  Размер файла: не более 10 МБ <br />
+                  Размеры: не менее 400x400 px
+                </p>
+              </div>
+            </div>
+          </FormItem>
           <FormField
             control={form.control}
             name="address"
